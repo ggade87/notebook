@@ -1,0 +1,55 @@
+.AddButton {
+  margin: 0 auto;
+  float: left;
+}
+
+.BackImage {
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 600px;
+  width: 100%;
+}
+.MainMenu {
+  margin: 0 auto;
+  display: block;
+}
+.MainMenuDiv {
+  float: left;
+}
+.MainContent {
+  margin: 0 auto;
+  float: left;
+}
+
+.column1 {
+  float: left;
+  width: 10%;
+}
+
+.column2 {
+  float: left;
+  border: 1px solid black;
+  width: 90%;
+}
+
+/* Clear floats after the columns */
+.row {
+  margin: 0 auto;
+  display: grid;
+}
+
+@media only screen and (min-width: 300px) {
+  .row {
+    display: grid;
+  }
+}
+@media only screen and (min-width: 400px) {
+  .row {
+    display: inline;
+  }
+}
+@media only screen and (min-width: 600px) {
+  .row {
+    display: inline;
+  }
+}

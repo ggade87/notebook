@@ -1,0 +1,49 @@
+.BackImage {
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 600px;
+  width: 100%;
+}
+.MainMenu {
+  margin: 0 auto;
+  content: "";
+  display: grid;
+  clear: both;
+}
+.MainMenuDiv {
+}
+.MainContent {
+}
+
+.AddButton {
+  background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+.AddButton:hover,
+.AddButton:active {
+  background-color: red;
+}
+.formDiv {
+  width: 200px;
+  margin: 0 auto;
+}
+
+@media only screen and (min-width: 300px) {
+  .formDiv {
+    width: 300px;
+  }
+}
+@media only screen and (min-width: 400px) {
+  .formDiv {
+    width: 450px;
+  }
+}
+@media only screen and (min-width: 600px) {
+  .formDiv {
+    width: 600px;
+  }
+}
