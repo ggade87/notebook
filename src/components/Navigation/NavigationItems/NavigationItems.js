@@ -6,11 +6,14 @@ const navigationItems = (props) => (
     <NavigationItem link="/" exact>
       Home
     </NavigationItem>
-    <NavigationItem link="/Home">Home</NavigationItem>
+    <NavigationItem link="/Contact">Contact</NavigationItem>
     {!props.isAuthenticated ? (
       <NavigationItem link="/auth">Authentication</NavigationItem>
     ) : (
-      <NavigationItem link="/logout">Logout</NavigationItem>
+      <React.Fragment>
+        <NavigationItem link="/Account">Account</NavigationItem>
+        <NavigationItem link="/logout">Logout</NavigationItem>
+      </React.Fragment>
     )}
   </ul>
 );

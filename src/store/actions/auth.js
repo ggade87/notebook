@@ -2,7 +2,7 @@ import * as actionTypes from "./actionTypes";
 import axios from "../../axios-orders";
 const liveUrl = "https://murmuring-castle-18009.herokuapp.com";
 const localUrl = "http://localhost:8080";
-const apiurl = liveUrl;
+const apiurl = localUrl;
 const clientUrl = "/http://localhost:3000";
 export const authStart = () => {
   return {
@@ -63,8 +63,19 @@ export const auth = (email, password, isSignup) => {
         headers: headers,
       })
       .then((response) => {
-        console.log(response.data.response[0].UsersId);
+        console.log(response.data);
         if (response.data.error && response.data.error.code > 0) {
+          throw response.data.error;
+        } else if (!response.data) {
+          throw response.data.error;
+        }
+        const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+        localStorage.setItem("token", response.data[0]._id);
+        localStorage.setItem("expirationDate", expirationDate);
+        localStorage.setItem("userId", response.data[0]._id);
+        dispatch(authSuccess(response.data[0]._id, response.data[0]._id));
+        dispatch(checkAuthTimeout(3600));
+        /*if (response.data.error && response.data.error.code > 0) {
           throw response.data.error;
         } else if (!response.data) {
           throw response.data.error;
@@ -79,7 +90,7 @@ export const auth = (email, password, isSignup) => {
             response.data.response[0].UsersId
           )
         );
-        dispatch(checkAuthTimeout(3600));
+        dispatch(checkAuthTimeout(3600));*/
       })
       .catch((err) => {
         if (err.code === 11000) {

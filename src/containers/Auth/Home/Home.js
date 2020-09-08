@@ -4,6 +4,7 @@ import * as actions from "../../../store/actions/index";
 import MainMenuContent from "./../../../components/content/mainMenuContent";
 import backImage from "../../../assets/images/slide-3.jpg";
 import classes from "./Home.module.css";
+import HomePage from "./../../../components/HomePage/HomePage";
 class Home extends Component {
   state = {
     showMenu: false,
@@ -35,7 +36,7 @@ class Home extends Component {
   };
   render() {
     return (
-      <div style={{ margin: "0 auto" }}>
+      <div className={classes.MainContainer}>
         {this.state.showForm ? (
           <div className={classes.formDiv}>
             <div className="card">
@@ -68,56 +69,62 @@ class Home extends Component {
           </div>
         ) : (
           <div className={classes.MainMenu}>
-            <div className={classes.MainMenuDiv}>
-              <ul className="nav nav-tabs">
-                <li
-                  className="nav-item"
-                  key={Math.random()}
-                  style={{
-                    padding: "6px",
-                  }}
-                >
-                  <button
-                    onClick={this.showMenuFormHandler}
-                    className={[classes.AddButton, "nav-link"].join(" ")}
-                  >
-                    NEW
-                  </button>
-                </li>
-                {this.props.mainMenu && this.props.mainMenu.length > 0
-                  ? this.props.mainMenu.map((item) => {
-                      return (
-                        <li
-                          className="nav-item"
-                          key={item._id}
-                          style={{
-                            padding: "6px",
-                          }}
-                        >
-                          <button
-                            className="nav-link active"
-                            onClick={() =>
-                              this.onMenuClick(item._id, item.name)
-                            }
-                          >
-                            {item.name}
-                          </button>
-                        </li>
-                      );
-                    })
-                  : "Please add new menu"}
-              </ul>
-            </div>
-            <div className={classes.MainContent}>
-              {this.state.showMenu ? (
-                <MainMenuContent
-                  menuName={this.state.menu}
-                  id={this.state.id}
-                ></MainMenuContent>
-              ) : (
-                <img src={backImage} className={classes.BackImage}></img>
-              )}
-            </div>
+            {this.props.isAuthenticated ? (
+              <React.Fragment>
+                <div className={classes.MainMenuDiv}>
+                  <ul className="nav nav-tabs">
+                    <li
+                      className="nav-item"
+                      key={Math.random()}
+                      style={{
+                        padding: "6px",
+                      }}
+                    >
+                      <button
+                        onClick={this.showMenuFormHandler}
+                        className={[classes.AddButton, "nav-link"].join(" ")}
+                      >
+                        NEW
+                      </button>
+                    </li>
+                    {this.props.mainMenu && this.props.mainMenu.length > 0
+                      ? this.props.mainMenu.map((item) => {
+                          return (
+                            <li
+                              className="nav-item"
+                              key={item._id}
+                              style={{
+                                padding: "6px",
+                              }}
+                            >
+                              <button
+                                className="nav-link active"
+                                onClick={() =>
+                                  this.onMenuClick(item._id, item.name)
+                                }
+                              >
+                                {item.name}
+                              </button>
+                            </li>
+                          );
+                        })
+                      : "Please add new menu"}
+                  </ul>
+                </div>
+                <div className={classes.MainContent}>
+                  {this.state.showMenu ? (
+                    <MainMenuContent
+                      menuName={this.state.menu}
+                      id={this.state.id}
+                    ></MainMenuContent>
+                  ) : (
+                    <img src={backImage} className={classes.BackImage}></img>
+                  )}
+                </div>
+              </React.Fragment>
+            ) : (
+              <HomePage></HomePage>
+            )}
           </div>
         )}
       </div>
@@ -128,6 +135,7 @@ class Home extends Component {
 const mapStateToProps = (state) => {
   return {
     mainMenu: state.home.mainMenu,
+    isAuthenticated: state.auth.token !== null,
   };
 };
 

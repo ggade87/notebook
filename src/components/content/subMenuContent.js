@@ -104,12 +104,11 @@ class SubMenuContent extends Component {
                   }}
                 >
                   <table className="table">
-                    {this.props.subMenuContent.map((item) => {
+                    {this.props.subMenuContent.map((item, index) => {
                       return (
                         <tr key={item._id}>
                           <td style={{ textAlign: "left" }}>
-                            <strong>{item.name}</strong>
-                            <hr></hr>
+                            {index + 1}. <strong>{item.name}</strong>
                             <p>
                               <div
                                 dangerouslySetInnerHTML={{
@@ -117,13 +116,6 @@ class SubMenuContent extends Component {
                                 }}
                               />
                             </p>
-                            <div
-                              style={{
-                                backgroundColor: "royalblue",
-                                height: "4px",
-                                width: "100%",
-                              }}
-                            ></div>
                           </td>
                         </tr>
                       );

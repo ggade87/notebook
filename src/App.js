@@ -7,6 +7,8 @@ import Auth from "./containers/Auth/Auth";
 import Logout from "./containers/Auth/Logout/Logout";
 import { connect } from "react-redux";
 import * as actions from "./store/actions/index";
+import Account from "./containers/Account/Account";
+import Contact from "./components/Contact/Contact";
 class App extends React.Component {
   componentDidMount() {
     this.props.onTryAutoSignup(); //Redirect login when page refresh
@@ -15,6 +17,7 @@ class App extends React.Component {
     let routes = (
       <Switch>
         <Route path="/auth" exact component={Auth}></Route>
+        <Route path="/Contact" component={Contact}></Route>
         <Route path="/" exact component={Home}></Route>
         <Redirect to="/"></Redirect>
       </Switch>
@@ -23,6 +26,8 @@ class App extends React.Component {
       routes = (
         <Switch>
           <Route path="/Home" component={Home}></Route>
+          <Route path="/Account" component={Account}></Route>
+          <Route path="/Contact" component={Contact}></Route>
           <Route path="/logout" exact component={Logout}></Route>
           <Route path="/" exact component={Home}></Route>
           <Redirect to="/"></Redirect>
@@ -32,7 +37,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <div>
-          .<Layout>{routes} </Layout>
+          <Layout> {routes} </Layout>
         </div>
       </div>
     );
