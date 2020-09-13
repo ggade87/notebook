@@ -20,6 +20,7 @@ class Contact extends Component {
           <li>Work on Account page :- status: </li>
           <li>Change Main menu and Sub Menu design :- status: </li>
           <li>Design HomePage :- status: </li>
+          <li>Create table in RichTextBox :- status: </li>
         </ul>
       </div>
     );
