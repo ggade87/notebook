@@ -222,3 +222,205 @@ export const addContent = (id, name, value) => {
       });
   };
 };
+
+
+export const uploadfileSuccess = (id, files) => {
+  return {
+    type: actionsTypes.UPLOADFILE,
+    id: id,
+    file: files,
+  };
+};
+export const uploadfileStart = () => {
+  return {
+    type: actionsTypes.UPLOADFILE_START,
+  };
+};
+export const uploadfileFail = (error) => {
+  return {
+    type: actionsTypes.UPLOADFILE_FAIL,
+    error: error,
+  };
+};
+export const uploadfile = (orderData) => {
+  return (dispatch) => {
+    dispatch(uploadfileStart()); 
+    const authData = {
+      imageData: orderData,
+      id:localStorage.getItem("userId")
+    };
+    let url = "http://localhost:8080/addImage";
+
+    const headers = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+    axios
+      .put(url, authData, {
+        headers: headers,
+      })
+      .then((response) => {
+        console.log('succcess ' ,response)
+        dispatch(uploadfileSuccess(response.data.name, response.data));
+
+        return axios.get(
+          "http://localhost:8080/getImage?userId=" +
+            localStorage.getItem("userId")
+        )
+      }) 
+      .then((response) => {
+        console.log(response)
+        const fetchOrders = [];
+        for (let key in response.data) {
+          fetchOrders.push({
+            file: response.data[key].image,
+          });
+        }
+        dispatch(loadfilesSuccess(fetchOrders));
+      })
+      .catch((err) => {
+        dispatch(uploadfileFail(err))
+      });
+  };
+};
+
+
+export const loadfilesSuccess = (file) => {
+  return {
+    type: actionsTypes.LOAD_FILE_SUCCESS,
+    file: file,
+  };
+};
+export const loadImage = () => {
+  return (dispatch) => {
+    axios
+    .get(
+      "http://localhost:8080/getImage?userId=" +
+        localStorage.getItem("userId")
+    )
+    .then((response) => {
+      console.log(response)
+      const fetchOrders = [];
+      for (let key in response.data) {
+        fetchOrders.push({
+          file: response.data[key].image,
+        });
+      }
+      dispatch(loadfilesSuccess(fetchOrders));
+    })
+    .catch((error) => {
+      console.log(error)
+      //dispatch(fetchIngredientsFailed());
+    });
+  };
+};
+
+
+export const updateUserSuccess = () => {
+  return {
+    type: actionsTypes.UPDATE_USER_SUCCESS,
+  };
+};
+
+export const updateUserComplete = () => {
+  return {
+    type: actionsTypes.UPDATE_USER_COMPLETE,
+  };
+};
+
+
+export const updateUser = (User) => {
+  return (dispatch) => {
+    dispatch(uploadfileStart()); 
+    const authData = {
+      User: User,
+      id:localStorage.getItem("userId")
+    };
+    let url = "http://localhost:8080/updateUser";
+
+    const headers = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+    axios
+      .put(url, authData, {
+        headers: headers,
+      })
+      .then((response) => {
+        console.log('updateUser succcess ' ,response)
+        dispatch(updateUserSuccess());
+      }).then((response) => {
+        dispatch(updateUserComplete());
+      }) 
+      .catch((err) => {
+        dispatch(uploadfileFail(err))
+      });
+  };
+};
+
+
+
+export const loadUserSuccess = (user) => {
+  return {
+    type: actionsTypes.LOADUSERDETAILS,
+    user: user,
+  };
+};
+
+export const loadUser = () => {
+  console.log("IN loadUser")
+  return (dispatch) => {
+    axios
+    .get(
+      "http://localhost:8080/getUserDetails?userId=" +
+        localStorage.getItem("userId")
+    )
+    .then((response) => {
+      dispatch(loadUserSuccess(response.data[0]))
+    })
+    .catch((error) => {
+      console.log("error",error)
+      //dispatch(fetchIngredientsFailed());
+    });
+  };
+};
+
+export const updatePasswordSuccess = () => {
+  return {
+    type: actionsTypes.UPDATE_PASSWORD_SUCCESS,
+  };
+};
+
+export const updatePasswordComplete = () => {
+  return {
+    type: actionsTypes.UPDATE_PASSWORD_COMPLETE,
+  };
+};
+
+export const updatePassword = (newPassword) => {
+  return (dispatch) => {
+    const authData = {
+      password: newPassword,
+      id:localStorage.getItem("userId")
+    };
+    let url = "http://localhost:8080/updatePassword";
+
+    const headers = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+    axios
+      .put(url, authData, {
+        headers: headers,
+      })
+      .then((response) => {
+        console.log('updateUser succcess ' ,response)
+        dispatch(updatePasswordSuccess());
+      })  .then((response) => {
+        dispatch(updatePasswordComplete())
+      })
+      .catch((err) => {
+        //dispatch(uploadfileFail(err))
+      });
+  };
+};

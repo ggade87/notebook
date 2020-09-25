@@ -1,9 +1,9 @@
 import * as actionTypes from "./actionTypes";
 import axios from "../../axios-orders";
-const liveUrl = "https://murmuring-castle-18009.herokuapp.com";
+//const liveUrl = "https://murmuring-castle-18009.herokuapp.com";
 const localUrl = "http://localhost:8080";
 const apiurl = localUrl;
-const clientUrl = "/http://localhost:3000";
+//const clientUrl = "/http://localhost:3000";
 export const authStart = () => {
   return {
     type: actionTypes.AUTH_START,

@@ -8,7 +8,14 @@ var MongoClient = require("mongodb").MongoClient;
 var url = "mongodb://localhost:27017/";
 var bodyParser = require("body-parser");
 var jsonParser = bodyParser.json();
-
+//app.use(express.bodyParser({limit: '50mb'}));
+//Below two line added to save image large size
+app.use(bodyParser.urlencoded({
+  limit: "50mb",
+  extended: false
+}));
+app.use(bodyParser.json({limit: "50mb"}));
+var ObjectID = require('mongodb').ObjectID; 
 // create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.get("/", function (req, res) {
@@ -185,6 +192,7 @@ app.post("/rigisterUser", jsonParser, function (req, res) {
       var { email, password } = req.body;
       var myobj = {
         usersId: "",
+        image:"",
         name: "",
         email: email,
         password: password,
@@ -192,6 +200,130 @@ app.post("/rigisterUser", jsonParser, function (req, res) {
         profession: "",
       };
       dbo.collection("Users").insertOne(myobj, function (error, result) {
+        if (error) {
+          res.send({ error: error });
+        } else {
+          res.send(result);
+        }
+
+        db.close();
+      });
+    }
+  );
+});
+
+
+app.put("/addImage", jsonParser, function (req, res) {
+  MongoClient.connect(
+    url,
+    { useNewUrlParser: true, useUnifiedTopology: true },
+    function (err, db) {
+      var dbo = db.db("notebook");
+      var { imageData, id } = req.body;
+     
+      var myquery = { "_id": ObjectID(id)};
+      console.log(id,imageData)
+      var newvalues ={$set: {
+        "image":imageData
+      }};
+      dbo.collection("Users").updateOne(myquery ,newvalues, function (error, result) {
+        if (error) {
+          res.send({ error: error });
+        } else {
+          res.send(result);
+        }
+
+        db.close();
+      });
+    }
+  );
+});
+
+
+app.get("/getImage", jsonParser, function (req, res) {
+  MongoClient.connect(url, { useUnifiedTopology: true }, function (err, db) {
+    if (err) throw err;
+    var dbo = db.db("notebook");
+    var { userId } = req.query;
+    var query = { "_id": ObjectID(userId)};
+    dbo
+      .collection("Users")
+      .find(query)
+      .toArray(function (err, result) {
+        if (err) throw err;
+        result.length === 0
+          ? res.send({ error: { code: 1 } })
+          : res.send(result);
+        db.close();
+      });
+  });
+});
+
+
+
+
+
+app.put("/updateUser", jsonParser, function (req, res) {
+  MongoClient.connect(
+    url,
+    { useNewUrlParser: true, useUnifiedTopology: true },
+    function (err, db) {
+      var dbo = db.db("notebook");
+      var { User, id } = req.body;
+     
+      var myquery = { "_id": ObjectID(id)};
+      var newvalues ={$set: {
+        "name":User.name,
+        "Mobile": User.Mobile,
+        "profession":User.profession,
+      }};
+      dbo.collection("Users").updateOne(myquery ,newvalues, function (error, result) {
+        if (error) {
+          res.send({ error: error });
+        } else {
+          res.send(result);
+        }
+
+        db.close();
+      });
+    }
+  );
+});
+
+
+app.get("/getUserDetails", jsonParser, function (req, res) {
+  MongoClient.connect(url, { useUnifiedTopology: true }, function (err, db) {
+    if (err) throw err;
+    var dbo = db.db("notebook");
+    var { userId } = req.query;
+    var query = { "_id": ObjectID(userId)};
+    dbo
+      .collection("Users")
+      .find(query)
+      .toArray(function (err, result) {
+        console.log("getUserDetails",result);
+        if (err) throw err;
+        result.length === 0
+          ? res.send({ error: { code: 1 } })
+          : res.send(result);
+        db.close();
+      });
+  });
+});
+
+app.put("/updatePassword", jsonParser, function (req, res) {
+  MongoClient.connect(
+    url,
+    { useNewUrlParser: true, useUnifiedTopology: true },
+    function (err, db) {
+      var dbo = db.db("notebook");
+      var { password, id } = req.body;
+     
+      var myquery = { "_id": ObjectID(id)};
+      var newvalues ={$set: {
+        "password":password,
+      }};
+      dbo.collection("Users").updateOne(myquery ,newvalues, function (error, result) {
         if (error) {
           res.send({ error: error });
         } else {

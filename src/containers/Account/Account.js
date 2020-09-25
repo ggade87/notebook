@@ -1,23 +1,76 @@
 import React, { Component } from "react";
 import classes from "./Account.module.css";
+import PersonalDetails from "./PersonalDetails/PersonalDetails";
+import MenuUpdate from "./MenuUpdate/MenuUpdate";
+
 class Account extends Component {
-  state = {};
+  state = {
+    personalDetail:true,
+    mainMenu:false,
+    subMenu:false
+  };
+
+  changeMenuHandler = (type) => {
+    if(type === 'personalDetail'){
+      this.setState({personalDetail:true,mainMenu:false,subMenu:false})
+    } else if(type === 'mainMenu') {
+      this.setState({personalDetail:false,mainMenu:true,subMenu:false})
+    }else if(type === 'subMenu') {
+      this.setState({personalDetail:false,mainMenu:false,subMenu:true})
+    }
+  }
   render() {
     return (
       <div className={classes.Account}>
-        <strong>Implement below fucntionality in this page</strong> <br></br>
-        <br></br> <br></br>
-        1.Update account information change password.
-        <br></br>
-        <br></br>
-        2. Change Main menu and subMenu name
-        <br></br>
-        <br></br>
-        3. Delete Main menu and Sub menu.
-        <br></br>
-        <br></br>
-        4. Edit any content or delete content of any specific menu. <br></br>
-        <br></br>
+        <div className={classes.row}>
+        <div className={classes.column1} >
+          <h2><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-tools" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M0 1l1-1 3.081 2.2a1 1 0 0 1 .419.815v.07a1 1 0 0 0 .293.708L10.5 9.5l.914-.305a1 1 0 0 1 1.023.242l3.356 3.356a1 1 0 0 1 0 1.414l-1.586 1.586a1 1 0 0 1-1.414 0l-3.356-3.356a1 1 0 0 1-.242-1.023L9.5 10.5 3.793 4.793a1 1 0 0 0-.707-.293h-.071a1 1 0 0 1-.814-.419L0 1zm11.354 9.646a.5.5 0 0 0-.708.708l3 3a.5.5 0 0 0 .708-.708l-3-3z"/>
+              <path fill-rule="evenodd" d="M15.898 2.223a3.003 3.003 0 0 1-3.679 3.674L5.878 12.15a3 3 0 1 1-2.027-2.027l6.252-6.341A3 3 0 0 1 13.778.1l-2.142 2.142L12 4l1.757.364 2.141-2.141zm-13.37 9.019L3.001 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026z"/>
+            </svg>
+          </h2>
+          <div className="container" >
+            <div className="row">
+              <div className="col" style={{padding:"0px 0px 5px 0px" }}>
+              <button style={{width:"100%"}} className="btn btn-success" onClick={() => this.changeMenuHandler('personalDetail')}>
+                Personal details
+                <svg width="1em" height="1em" viewBox="0 0 16 16" className="float-right bi bi-arrow-right-square-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm2.5 8.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col" style={{padding:"0px 0px 5px 0px" }}>
+                <button style={{width:"100%"}}  className="btn btn-success"  onClick={() => this.changeMenuHandler('mainMenu')}>Main Menu
+                  <svg width="1em" height="1em" viewBox="0 0 16 16" className="float-right  bi bi-arrow-right-square-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm2.5 8.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col" style={{padding:"0px 0px 5px 0px" }}>
+                <button style={{width:"100%"}}  className="btn btn-success"  onClick={() => this.changeMenuHandler('subMenu')}>
+                  Sub Menu
+                  <svg width="1em" height="1em" viewBox="0 0 16 16" className="float-right  bi bi-arrow-right-square-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm2.5 8.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"/>
+                  </svg>
+                </button>
+                
+              </div>
+            </div>
+          </div>
+         
+          
+          
+        </div>
+        <div className={classes.column2}  >
+           {this.state.personalDetail ? <div><PersonalDetails></PersonalDetails> </div> : ""}
+           {this.state.mainMenu ? <div><MenuUpdate menuType='MainMenu'></MenuUpdate></div> : ""}
+           {this.state.subMenu ? <div><MenuUpdate menuType='SubMenu'></MenuUpdate></div> : ""}
+        </div>
+      </div>
       </div>
     );
   }

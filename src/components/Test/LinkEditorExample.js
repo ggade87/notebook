@@ -1,7 +1,6 @@
-import React, { Component } from "react";
-import { stateToHTML } from "draft-js-export-html";
+import React from "react";
 
-import { CompositeDecorator,convertToRaw,Editor, EditorState, RichUtils, getDefaultKeyBinding } from "draft-js";
+import { CompositeDecorator,convertToRaw,Editor, EditorState, RichUtils  } from "draft-js";
 import "draft-js/dist/Draft.css";
 
   class LinkEditorExample extends React.Component {

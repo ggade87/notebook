@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
 import classes from "./SubMenuContent.module.css";
 import RichTextBox from "./../RichTextBox/RichTextBox";
-import LinkEditorExample from '../../components/Test/LinkEditorExample'
 class SubMenuContent extends Component {
   state = { showContentForm: false, switchAnswer: false, content: "" };
   constructor() {

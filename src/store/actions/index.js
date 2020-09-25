@@ -5,5 +5,5 @@ export {
   addSubMenu,
   loadSubMenuContent,
   fetchMainMenu,
-  addContent,
+  addContent,uploadfile,loadImage,updateUser,loadUser,updatePassword
 } from "./home";
