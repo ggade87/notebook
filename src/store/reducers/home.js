@@ -185,6 +185,46 @@ const updatePasswordComplete = (state, action) => {
     updatePasswordFlag: false,
   });
 };
+
+const updateMainMenuSuccess = (state, action) => {
+  const mainMenuUpdated = [...state.mainMenu];
+  const index = state.mainMenu.findIndex((m) => m._id === action.menuid);
+  mainMenuUpdated[index] = {...mainMenuUpdated[index], name: action.menuname}  
+  const updatedState = {
+    mainMenu: mainMenuUpdated,
+  };
+  return updateObject(state, updatedState);
+};
+
+const updateSubMenuSuccess = (state, action) => {
+  const subMenuUpdated = [...state.subMenu];
+  const index = state.mainMenu.findIndex((m) => m._id === action.menuid);
+  subMenuUpdated[index] = {...subMenuUpdated[index], name: action.submenuname}  
+  const updatedState = {
+    subMenu: subMenuUpdated,
+  };
+  return updateObject(state, updatedState);
+};
+const deleteMainMenuSuccess = (state, action) => {
+  const mainMenuUpdated = [...state.mainMenu];
+  const index = state.mainMenu.findIndex((m) => m._id === action.menuid);
+  mainMenuUpdated.splice(index, 1);
+  const updatedState = {
+    mainMenu: mainMenuUpdated,
+  };
+  return updateObject(state, updatedState);
+};
+
+
+const deleteSubMenuSuccess = (state, action) => {
+  const subMenuUpdated = [...state.subMenu];
+  const index = state.subMenu.findIndex((m) => m._id === action.menuid);
+  subMenuUpdated.splice(index, 1);
+  const updatedState = {
+    subMenu: subMenuUpdated,
+  };
+  return updateObject(state, updatedState);
+};
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_MENUES:
@@ -221,6 +261,14 @@ const reducer = (state = initialState, action) => {
       return updatePasswordSuccess(state, action);
     case actionTypes.UPDATE_PASSWORD_COMPLETE:
       return updatePasswordComplete(state, action);
+    case actionTypes.UPDATE_MAINMENU_SUCCESS:
+      return updateMainMenuSuccess(state, action);
+    case actionTypes.UPDATE_SUBMENU_SUCCESS:
+      return updateSubMenuSuccess(state, action);
+    case actionTypes.DELETE_MAINMENU_SUCCESS:
+      return deleteMainMenuSuccess(state, action);
+    case actionTypes.DELETE_SUBMENU_SUCCESS:
+      return deleteSubMenuSuccess(state, action);
     default:
       return state;
   }

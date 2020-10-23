@@ -15,12 +15,12 @@ class Contact extends Component {
           <li>
             Add fucntionality to RichTextBox to save and display link :- status: Completed
           </li>
-          <li>Work on Account page :- status: In Progress </li>
-          <li>Account page - Edit/Delete Main Menu :- status: In Progress </li>
-          <li>Account page - Edit/Delete Sub Main Menu :- status: In Progress </li>
-          <li>Create table in RichTextBox :- status: </li>
-          <li>Edit content :- status: </li>
-          <li>Delete content :- status: </li>
+          <li>Work on Account page :- status: Completed </li>
+          <li>Account page - Edit/Delete Main Menu :- status: Completed </li>
+          <li>Account page - Edit/Delete Sub Main Menu :- status: Completed </li>
+          <li>Create table in RichTextBox :- status: In Progress </li>
+          <li>Edit content :- status: In Progress </li>
+          <li>Delete content :- status: In Progress</li>
           <li>Change Main menu and Sub Menu design :- status: </li>
           <li>Design HomePage :- status: </li>
           <li>Create Contact form :- status: In Progress</li>

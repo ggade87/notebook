@@ -424,3 +424,141 @@ export const updatePassword = (newPassword) => {
       });
   };
 };
+
+
+
+
+export const updateMainMenuSuccess = (menuname,menuid) => {
+  return {
+    type: actionsTypes.UPDATE_MAINMENU_SUCCESS,
+    menuname:menuname,
+    menuid:menuid
+  };
+};
+
+
+export const mainMenuUpdate = (menuname,menuid) => {
+
+  return (dispatch) => {
+    const authData = {
+      menuname: menuname,
+      menuid:menuid
+    };
+    let url = "http://localhost:8080/updateMainMenu";
+    const headers = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+    axios
+      .put(url, authData, {headers: headers,})
+      .then((response) => {
+        console.log('mainMenuUpdate succcess ' ,response)
+        dispatch(updateMainMenuSuccess(menuname,menuid));
+      })  .then((response) => {
+        //dispatch(updatePasswordComplete())
+      })
+      .catch((err) => {
+        //dispatch(uploadfileFail(err))
+      });
+  };
+};
+
+
+export const updateSubMenuSuccess = (submenuname,menuid) => {
+  return {
+    type: actionsTypes.UPDATE_SUBMENU_SUCCESS,
+    submenuname:submenuname,
+    menuid:menuid
+  };
+};
+
+
+export const subMenuUpdate = (submenuname,menuid) => {
+
+  return (dispatch) => {
+    const authData = {
+      submenuname: submenuname,
+      menuid:menuid
+    };
+    let url = "http://localhost:8080/updateSubMenu";
+    const headers = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+    axios
+      .put(url, authData, {headers: headers,})
+      .then((response) => {
+        console.log('subMenuUpdate succcess ' ,response)
+        dispatch(updateSubMenuSuccess(submenuname,menuid));
+      })  .then((response) => {
+        //dispatch(updatePasswordComplete())
+      })
+      .catch((err) => {
+        //dispatch(uploadfileFail(err))
+      });
+  };
+};
+
+export const deleteMainMenuSuccess = (menuid) => {
+  return {
+    type: actionsTypes.DELETE_MAINMENU_SUCCESS,
+    menuid:menuid
+  };
+};
+
+export const mainMenuDelete = (menuname,menuid) => {
+
+  return (dispatch) => { 
+    const authData = {
+      menuname: menuname,
+      menuid:menuid
+    };
+    let url = "http://localhost:8080/deleteMainMenu";
+    const headers = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+    axios
+      .delete(url, {params: {menuid:menuid}}, {headers: headers,})
+      .then((response) => {
+        console.log('deleteMainMenu succcess ' ,response)
+        dispatch(deleteMainMenuSuccess(menuid));
+      })  .then((response) => {
+        //dispatch(updatePasswordComplete())
+      })
+      .catch((err) => {
+        //dispatch(uploadfileFail(err))
+      });
+  };
+};
+
+
+
+export const deleteSubMenuSuccess = (menuid) => {
+  return {
+    type: actionsTypes.DELETE_SUBMENU_SUCCESS,
+    menuid:menuid
+  };
+};
+
+export const subMenuDelete = (submenuname,menuid) => {
+
+  return (dispatch) => { 
+    let url = "http://localhost:8080/deleteSubMenu";
+    const headers = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+    axios
+      .delete(url, {params: {menuid:menuid}}, {headers: headers,})
+      .then((response) => {
+        console.log('deleteMainMenu succcess ' ,response)
+        dispatch(deleteSubMenuSuccess(menuid));
+      })  .then((response) => {
+        //dispatch(updatePasswordComplete())
+      })
+      .catch((err) => {
+        //dispatch(uploadfileFail(err))
+      });
+  };
+};
