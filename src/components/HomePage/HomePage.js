@@ -9,7 +9,7 @@ class HomePage extends Component {
         <div style={{ color: "red", fontWeight: "bold" }}>
           Write code for Home page and design.
         </div>
-        <img src={backImage} className={classes.BackImage}></img>
+        <img src={backImage} alt="Loading." className={classes.BackImage}></img>
       </div>
     );
   }

@@ -83,7 +83,7 @@ class SubMenuContent extends Component {
                     dangerouslySetInnerHTML={{
                       __html: this.state.content,
                     }}
-                  />
+                  /> 
                   <RichTextBox handleData={this.handleData}></RichTextBox>
                 </div>
               )}

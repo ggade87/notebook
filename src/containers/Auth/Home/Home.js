@@ -118,7 +118,7 @@ class Home extends Component {
                       id={this.state.id}
                     ></MainMenuContent>
                   ) : (
-                    <img src={backImage} className={classes.BackImage}></img>
+                    <img src={backImage} alt='Loading' className={classes.BackImage}></img>
                   )}
                 </div>
               </React.Fragment>

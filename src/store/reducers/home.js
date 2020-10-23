@@ -45,6 +45,12 @@ const initialState = {
       value: "It a noral javascriot fucntion",
     },
   ],
+  loading: false,
+  file: [], 
+  User:{
+    },
+    message:"",
+    updatePasswordFlag:false,
 };
 
 const loadMainMenu = (state, action) => {
@@ -125,6 +131,100 @@ const fetchContentFail = (state, action) => {
     contentError: action.error,
   });
 };
+
+const uploadFile = (state, action) => {
+  const newOrder = updateObject(action.file, { id: action.id });
+  return updateObject(state, {
+    file: state.file.concat(newOrder),
+    loading: false,
+  });
+};
+
+const uploadFileStart = (state, action) => {
+  return updateObject(state, { loading: true });
+};
+
+const uploadFileFail = (state, action) => {
+  return updateObject(state, { loading: false });
+};
+const loadFileSuccess = (state, action) => {
+  return updateObject(state, {
+    file: action.file,
+    loading: false,
+  });
+};
+
+const loadUserSuccess = (state, action) => {
+  console.log("loadUserSuccess  ",action.user)
+  return updateObject(state, {
+    User: action.user,
+    message:"",
+    loading:false
+  });
+};
+const updateUserSuccess = (state, action) => {
+  return updateObject(state, {
+    message: "User updated",
+    loading:false
+  });
+};
+const updateUserComplete = (state, action) => {
+  return updateObject(state, {
+    message: "",
+  });
+};
+
+const updatePasswordSuccess = (state, action) => {
+  return updateObject(state, {
+    updatePasswordFlag: true,
+  });
+};
+
+const updatePasswordComplete = (state, action) => {
+  return updateObject(state, {
+    updatePasswordFlag: false,
+  });
+};
+
+const updateMainMenuSuccess = (state, action) => {
+  const mainMenuUpdated = [...state.mainMenu];
+  const index = state.mainMenu.findIndex((m) => m._id === action.menuid);
+  mainMenuUpdated[index] = {...mainMenuUpdated[index], name: action.menuname}  
+  const updatedState = {
+    mainMenu: mainMenuUpdated,
+  };
+  return updateObject(state, updatedState);
+};
+
+const updateSubMenuSuccess = (state, action) => {
+  const subMenuUpdated = [...state.subMenu];
+  const index = state.mainMenu.findIndex((m) => m._id === action.menuid);
+  subMenuUpdated[index] = {...subMenuUpdated[index], name: action.submenuname}  
+  const updatedState = {
+    subMenu: subMenuUpdated,
+  };
+  return updateObject(state, updatedState);
+};
+const deleteMainMenuSuccess = (state, action) => {
+  const mainMenuUpdated = [...state.mainMenu];
+  const index = state.mainMenu.findIndex((m) => m._id === action.menuid);
+  mainMenuUpdated.splice(index, 1);
+  const updatedState = {
+    mainMenu: mainMenuUpdated,
+  };
+  return updateObject(state, updatedState);
+};
+
+
+const deleteSubMenuSuccess = (state, action) => {
+  const subMenuUpdated = [...state.subMenu];
+  const index = state.subMenu.findIndex((m) => m._id === action.menuid);
+  subMenuUpdated.splice(index, 1);
+  const updatedState = {
+    subMenu: subMenuUpdated,
+  };
+  return updateObject(state, updatedState);
+};
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_MENUES:
@@ -143,6 +243,32 @@ const reducer = (state = initialState, action) => {
       return setContent(state, action);
     case actionTypes.GET_CONTENT_FAILED:
       return fetchContentFail(state, action);
+    case actionTypes.UPLOADFILE:
+      return uploadFile(state, action);
+    case actionTypes.LOAD_FILE_SUCCESS:
+      return loadFileSuccess(state, action);
+    case actionTypes.UPLOADFILE_START:
+      return uploadFileStart(state, action);
+    case actionTypes.UPLOADFILE_FAIL:
+      return uploadFileFail(state, action);
+    case actionTypes.LOADUSERDETAILS:
+      return loadUserSuccess(state, action);
+    case actionTypes.UPDATE_USER_SUCCESS:
+      return updateUserSuccess(state, action);
+    case actionTypes.UPDATE_USER_COMPLETE:
+      return updateUserComplete(state, action);
+    case actionTypes.UPDATE_PASSWORD_SUCCESS:
+      return updatePasswordSuccess(state, action);
+    case actionTypes.UPDATE_PASSWORD_COMPLETE:
+      return updatePasswordComplete(state, action);
+    case actionTypes.UPDATE_MAINMENU_SUCCESS:
+      return updateMainMenuSuccess(state, action);
+    case actionTypes.UPDATE_SUBMENU_SUCCESS:
+      return updateSubMenuSuccess(state, action);
+    case actionTypes.DELETE_MAINMENU_SUCCESS:
+      return deleteMainMenuSuccess(state, action);
+    case actionTypes.DELETE_SUBMENU_SUCCESS:
+      return deleteSubMenuSuccess(state, action);
     default:
       return state;
   }

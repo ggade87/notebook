@@ -1,3 +1,23 @@
 .Account {
-  background-color: darkseagreen;
+ /*  background-color:darkseagreen; */
+}
+.column1 {
+  float: left;
+  width: 20%;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+  border-right: 1px solid darkgray;
+}
+.column2 {
+  float: left;
+  width: 80%;
+  /*padding: 10px;*/
+  height: 300px; /* Should be removed. Only for demonstration 
+  background-color: lightgrey;*/
+}
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
 }
