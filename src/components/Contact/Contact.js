@@ -18,9 +18,9 @@ class Contact extends Component {
           <li>Work on Account page :- status: Completed </li>
           <li>Account page - Edit/Delete Main Menu :- status: Completed </li>
           <li>Account page - Edit/Delete Sub Main Menu :- status: Completed </li>
-          <li>Create table in RichTextBox :- status: In Progress </li>
+          <li>Delete content :- status: Completed</li>
           <li>Edit content :- status: In Progress </li>
-          <li>Delete content :- status: In Progress</li>
+          <li>Create table in RichTextBox :- status: </li>
           <li>Change Main menu and Sub Menu design :- status: </li>
           <li>Design HomePage :- status: </li>
           <li>Create Contact form :- status: In Progress</li>

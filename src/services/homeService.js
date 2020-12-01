@@ -119,7 +119,6 @@ app.post("/addConent", jsonParser, function (req, res) {
         } else {
           res.send(result);
         }
-
         db.close();
       });
     }
@@ -487,6 +486,31 @@ app.delete("/deleteSubMenu", jsonParser, function (req, res) {
               };
             }); 
           }
+        };
+      });  
+    }
+  );
+});
+
+
+
+
+app.delete("/deleteContent", jsonParser, function (req, res) {
+  MongoClient.connect(
+    url,
+    { useNewUrlParser: true, useUnifiedTopology: true },
+    function (err, db) {
+      var dbo = db.db("notebook");
+      var {   id } = req.query;
+      var myquery = {"_id": ObjectID(id) };
+      dbo.collection("Content").deleteMany(myquery, function(error, result) {
+        if (error) {
+          console.log("error Deleted ",error.message);
+          res.send({ error: error });
+        } else {
+          res.send(result);
+          console.log("Content deletedCount ",result.deletedCount);
+          db.close();
         };
       });  
     }
