@@ -1,6 +1,7 @@
 import * as actionTypes from "../actions/actionTypes";
 import { updateObject } from "../utility";
 const initialState = {
+  editableContent:{name:"",value:""},
   error: null,
   contentError: null,
   mainMenu: [
@@ -113,14 +114,15 @@ const fetchSubMenuFail = (state, action) => {
 };
 
 const setContent = (state, action) => {
-  const arr = {
-    _id: action.subMenuContent.ops[0]._id,
-    mid: action.subMenuContent.ops[0].smid,
-    name: action.action.subMenuContent.ops[0].name,
-    value: action.action.subMenuContent.ops[0].value,
+  const subMenuContentAdded = [...action.subMenuContent.ops];
+  const arr2 = {
+    _id: subMenuContentAdded[0]._id,
+    mid: subMenuContentAdded[0].smid,
+    name:subMenuContentAdded[0].name,
+    value: subMenuContentAdded[0].value,
   };
   const updateArr = [...state.subMenuContent];
-  updateArr.push(arr);
+  updateArr.push(arr2);
   const updatedState = {
     subMenuContent: updateArr,
   };
@@ -225,6 +227,44 @@ const deleteSubMenuSuccess = (state, action) => {
   };
   return updateObject(state, updatedState);
 };
+
+const deleteContentSuccess = (state, action) => {
+  const subMenuContentUpdated = [...state.subMenuContent];
+  const index = state.subMenuContent.findIndex((m) => m._id === action.id);
+  subMenuContentUpdated.splice(index, 1);
+  const updatedState = {
+    subMenuContent: subMenuContentUpdated,
+  };
+  return updateObject(state, updatedState);
+};
+
+
+const loadEditableContentSuccess = (state, action) => {
+  const updatedState = {
+    editableContent: action.editableContent,
+  };
+  return updateObject(state, updatedState);
+};
+const clearEditableContentSuccess = (state, action) => {
+  const updatedState = {
+    editableContent: {name:"",value:""},
+  };
+  return updateObject(state, updatedState);
+};
+
+const updateContentSuccess = (state, action) => {
+ // const updatedState = {
+  //};
+  //return updateObject(state, updatedState);
+  const Content = [...state.subMenuContent];
+  const index = state.subMenuContent.findIndex((m) => m._id === action.id);
+  Content[index] = {...Content[index], value: action.value}  
+  const updatedState = {
+    subMenuContent: Content,
+  };
+  return updateObject(state, updatedState);
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_MENUES:
@@ -269,6 +309,14 @@ const reducer = (state = initialState, action) => {
       return deleteMainMenuSuccess(state, action);
     case actionTypes.DELETE_SUBMENU_SUCCESS:
       return deleteSubMenuSuccess(state, action);
+    case actionTypes.DELETE_CONTENT_SUCCESS:
+      return deleteContentSuccess(state, action);
+    case actionTypes.LOAD_EDITABLE_CONTENT:
+      return loadEditableContentSuccess(state, action);
+    case actionTypes.CLEAR_EDITABLE_CONTENT:
+      return clearEditableContentSuccess(state, action);
+    case actionTypes.UPDATE_CONTENT_SUCCESS:
+      return updateContentSuccess(state, action);
     default:
       return state;
   }

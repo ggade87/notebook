@@ -19,6 +19,7 @@
 .MainContent {
   margin: 0 auto;
   float: left;
+  width: 100%;
 }
 
 .column1 {
@@ -53,3 +54,7 @@
     display: inline;
   }
 }
+
+
+
+

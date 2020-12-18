@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import * as actions from "./store/actions/index";
 import Account from "./containers/Account/Account";
 import Contact from "./components/Contact/Contact";
+import EditContentForm from './components/content/EditContentForm/EditContentForm'
 class App extends React.Component {
   componentDidMount() {
     this.props.onTryAutoSignup(); //Redirect login when page refresh
@@ -28,6 +29,7 @@ class App extends React.Component {
           <Route path="/Home" component={Home}></Route>
           <Route path="/Account" component={Account}></Route>
           <Route path="/Contact" component={Contact}></Route>
+          <Route path="/EditContentForm/:id" component={EditContentForm}></Route>
           <Route path="/logout" exact component={Logout}></Route>
           <Route path="/" exact component={Home}></Route>
           <Redirect to="/"></Redirect>

@@ -212,6 +212,7 @@ export const addContent = (id, name, value) => {
         headers: headers,
       })
       .then((response) => {
+        console.log("Content addedd")
         dispatch(addContentS(response.data, response.data.insertedId));
       })
       .catch((err) => {
@@ -416,7 +417,7 @@ export const updatePassword = (newPassword) => {
       .then((response) => {
         console.log('updateUser succcess ' ,response)
         dispatch(updatePasswordSuccess());
-      })  .then((response) => {
+      }).then((response) => {
         dispatch(updatePasswordComplete())
       })
       .catch((err) => {
@@ -424,9 +425,6 @@ export const updatePassword = (newPassword) => {
       });
   };
 };
-
-
-
 
 export const updateMainMenuSuccess = (menuname,menuid) => {
   return {
@@ -436,9 +434,7 @@ export const updateMainMenuSuccess = (menuname,menuid) => {
   };
 };
 
-
 export const mainMenuUpdate = (menuname,menuid) => {
-
   return (dispatch) => {
     const authData = {
       menuname: menuname,
@@ -454,7 +450,7 @@ export const mainMenuUpdate = (menuname,menuid) => {
       .then((response) => {
         console.log('mainMenuUpdate succcess ' ,response)
         dispatch(updateMainMenuSuccess(menuname,menuid));
-      })  .then((response) => {
+      }).then((response) => {
         //dispatch(updatePasswordComplete())
       })
       .catch((err) => {
@@ -490,7 +486,7 @@ export const subMenuUpdate = (submenuname,menuid) => {
       .then((response) => {
         console.log('subMenuUpdate succcess ' ,response)
         dispatch(updateSubMenuSuccess(submenuname,menuid));
-      })  .then((response) => {
+      }).then((response) => {
         //dispatch(updatePasswordComplete())
       })
       .catch((err) => {
@@ -509,10 +505,6 @@ export const deleteMainMenuSuccess = (menuid) => {
 export const mainMenuDelete = (menuname,menuid) => {
 
   return (dispatch) => { 
-    const authData = {
-      menuname: menuname,
-      menuid:menuid
-    };
     let url = "http://localhost:8080/deleteMainMenu";
     const headers = {
       "Content-Type": "application/json",
@@ -523,7 +515,7 @@ export const mainMenuDelete = (menuname,menuid) => {
       .then((response) => {
         console.log('deleteMainMenu succcess ' ,response)
         dispatch(deleteMainMenuSuccess(menuid));
-      })  .then((response) => {
+      }).then((response) => {
         //dispatch(updatePasswordComplete())
       })
       .catch((err) => {
@@ -554,7 +546,7 @@ export const subMenuDelete = (submenuname,menuid) => {
       .then((response) => {
         console.log('deleteMainMenu succcess ' ,response)
         dispatch(deleteSubMenuSuccess(menuid));
-      })  .then((response) => {
+      }).then((response) => {
         //dispatch(updatePasswordComplete())
       })
       .catch((err) => {
@@ -562,3 +554,104 @@ export const subMenuDelete = (submenuname,menuid) => {
       });
   };
 };
+
+
+export const deleteContentSuccess = (id) => {
+  return {
+    type: actionsTypes.DELETE_CONTENT_SUCCESS,
+    id:id
+  };
+};
+
+export const onContentDelete = (id) => {
+  console.log("delete me Start",id);
+  return (dispatch) => { 
+    let url = "http://localhost:8080/deleteContent";
+    const headers = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+    axios
+      .delete(url, {params: {id:id}}, {headers: headers,})
+      .then((response) => {
+        console.log('onContentDelete succcess ' ,response)
+        dispatch(deleteContentSuccess(id));
+      }).then((response) => {
+        console.log("delete me Complete",id);
+        //dispatch(updatePasswordComplete())
+      })
+      .catch((err) => {
+        console.log("delete me Error",id);
+        //dispatch(uploadfileFail(err))
+      });
+  };
+}
+
+
+
+export const updateContentSuccess = (id,value) => {
+  return {
+    type: actionsTypes.UPDATE_CONTENT_SUCCESS,
+    id:id,
+    value:value
+  };
+};
+
+export const onContentUpdate = (id,name,value) => {
+  console.log("onContentUpdate Start",id,name,value);
+  return (dispatch) => { 
+    const authData = {
+      id: id,
+      name:name,
+      value:value
+    };
+    let url = "http://localhost:8080/updateContent";
+    const headers = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+    axios
+      .put(url, authData, {headers: headers,})
+      .then((response) => {
+        console.log('Content Update succcess ' ,response)
+        dispatch(updateContentSuccess(id,value));
+      }).then((response) => {
+        //dispatch(updatePasswordComplete())
+      })
+      .catch((err) => {
+        //dispatch(uploadfileFail(err))
+      });
+  };
+}
+
+export const loadSubMenuContentByIdSuccess = (data) => {
+  return {
+    type: actionsTypes.LOAD_EDITABLE_CONTENT,
+    editableContent:data
+  };
+};
+
+export const loadSubMenuContentById = (id) => {
+  console.log(id);
+  return (dispatch) => { 
+    axios
+    .get(
+      "http://localhost:8080/getSubMenuContentById?id=" +id
+    )
+    .then((response) => {
+      console.log(response);
+      dispatch(loadSubMenuContentByIdSuccess({name:response.data[0].name,value:response.data[0].value}))
+    })
+    .catch((error) => {
+      console.log("error",error)
+      //dispatch(fetchIngredientsFailed());
+    });
+  };
+}
+
+export const loadEditableContentClear = () => {
+  return {
+    type: actionsTypes.CLEAR_EDITABLE_CONTENT,
+  };
+}
+
