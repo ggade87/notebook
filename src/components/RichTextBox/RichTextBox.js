@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { stateToHTML } from "draft-js-export-html";
 
-import {CompositeDecorator,convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState } from "draft-js";
+import {CompositeDecorator,convertToRaw,convertFromHTML, Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState } from "draft-js";
 import "draft-js/dist/Draft.css";
 import "./RichTextBox.css";
 import HtmlParser from "react-html-parser";
@@ -14,8 +14,9 @@ class RichTextBox extends Component {
         component: Link,
       },
     ]);
+    
     this.state = {
-      editorState:  this.props.value ?  this.getState(this.props.value) :  EditorState.createEmpty(decorator)  ,
+      editorState:  this.props.value ?  this.props.value :  EditorState.createEmpty(decorator)  ,
       editorContentHtml: "", 
       showURLInput: false,
       urlValue: '',
@@ -25,7 +26,11 @@ class RichTextBox extends Component {
     this.focus = () => this.refs.editor.focus();
     this.onChange = (editorState) => { const content = this.state.editorState.getCurrentContent();
       console.log(convertToRaw(content));
-      this.props.handleData(stateToHTML(editorState.getCurrentContent()));
+      //this.props.handleData(stateToHTML(editorState.getCurrentContent()));
+     // const rawDraftContentState = JSON.stringify(convertToRaw(editorState.getCurrentContent()) );
+     const rawDraftContentState = convertToRaw(editorState.getCurrentContent());//convertToRaw(editorState.getCurrentContent())  ;
+     const obj= JSON.stringify(rawDraftContentState, null, 2)
+     this.props.handleData(obj);
       this.setState({
         editorState,
         editorContentHtml: stateToHTML(editorState.getCurrentContent()),
@@ -46,9 +51,15 @@ class RichTextBox extends Component {
 
   //This function set state when edit called.
   getState = (val) => {
-    const oldState=   val.replace('<p>','').replace('</p>','') ;
-     
-    return EditorState.createWithContent(ContentState.createFromText(oldState));
+    
+    const blocksFromHTML = convertFromHTML(val);
+    const state = ContentState.createFromBlockArray(
+      blocksFromHTML.contentBlocks,
+      blocksFromHTML.entityMap,
+    );
+     const editorState =EditorState.createWithContent(state);
+    return val;
+    //return EditorState.createWithContent(ContentState.createFromText(val));
   }
 
   _handleKeyCommand(command, editorState) {

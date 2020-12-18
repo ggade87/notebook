@@ -3,14 +3,15 @@ import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
 import classes from "./SubMenuContent.module.css";
 import RichTextBox from "./../RichTextBox/RichTextBox";
-
+import { Link } from "react-router-dom";
 import Popup from 'reactjs-popup';
 //Uncomment for popup import 'reactjs-popup/dist/index.css';
- 
+import {CompositeDecorator,convertToRaw,convertFromHTML, Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState, convertFromRaw } from "draft-js";
+import RichTextDisplay from '../RichTextBox/RichTextDisplay/RichTextDisplay';
 class SubMenuContent extends Component {
   state = { showContentForm: false, switchAnswer: false, content: "",id:"",newName:"" };
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.inputName = React.createRef();
     this.inputContent = React.createRef();
     this.inputEditName = React.createRef();
@@ -27,6 +28,7 @@ class SubMenuContent extends Component {
 
   handleSave = (e) => {
     e.preventDefault();
+    alert(this.state.content)
     if (this.inputName.current.value.trim() !== "")
       this.props.onContentAdded(
         this.props.id,
@@ -46,6 +48,7 @@ class SubMenuContent extends Component {
   };
 
   handleData = (data) => {
+  
     this.setState({ content: data });
     console.log("On dataPage :", data);
   };
@@ -58,22 +61,51 @@ class SubMenuContent extends Component {
     } 
   }
 
-  handleEdit= (id) => {
+  handleEdit= (id,name) => {
+    this.props.onSubMenuContentLoad(this.props.id);
+    this.setState({content:""})
+    /*
     if(window.confirm('Are you sure to edit this record?')){
       if(this.state.content){
-        alert(this.state.content)
-        alert(id)
         this.props.onContentUpdate(id,this.inputEditName.current.value,this.state.content);
       }else{
-        alert("No change")
       }
      this.setState({content:""})
       console.log('Code for Edit');
-      
-    } 
+     
+    }  */
   }
   change = (event) => {
     this.setState({[event.target.newName]:event.target.value})
+}
+
+handleEdt = (data) =>{
+  this.props.history.push('/dresses?id='+data);
+}
+
+display= (data) =>{
+ /* const blocksFromHTML = convertFromHTML(data);
+    const state = ContentState.createFromBlockArray(
+      blocksFromHTML.contentBlocks,
+      blocksFromHTML.entityMap,
+    );
+     const editorState =EditorState.createWithContent(state);
+  
+    const rawDraftContentState = JSON.stringify(convertToRaw(editorState.getCurrentContent()) );
+    console.log(rawDraftContentState);  
+    const blocksFromHTML =   convertFromRaw(JSON.parse(data)) ;
+    const state = ContentState.createFromBlockArray(
+      blocksFromHTML.contentBlocks,
+      blocksFromHTML.entityMap,
+    );
+     const editorState =EditorState.createWithContent(blocksFromHTML); */
+     const blocksFromHTML =   convertFromRaw(data) ;
+    const state = ContentState.createFromBlockArray(
+      blocksFromHTML.contentBlocks,
+      blocksFromHTML.entityMap,
+    );
+     const editorState =EditorState.createWithContent(blocksFromHTML);
+  return data;
 }
   render() {
     return (
@@ -135,6 +167,12 @@ class SubMenuContent extends Component {
                 >
                   <table className="table">
                   <tbody>
+                  { /*<GridComponent dataSource={this.props.subMenuContent}>
+                        <ColumnsDirective>
+                          <ColumnDirective field='name' width='100' textAlign="Right"/>
+                          <ColumnDirective field='value'  headerText='Answer'  />
+                        </ColumnsDirective>
+                      </GridComponent>*/}
                     {this.props.subMenuContent.map((item, index) => {
                       return (
                        
@@ -142,11 +180,13 @@ class SubMenuContent extends Component {
                           <td style={{ textAlign: "left" }}>
                           <div className="form-row">
                             <div className="col-9">
+                            
                                 {index + 1}. <strong>{item.name}</strong>  
                             </div>
                             <div className="col">
                                 <div>
-                                <Popup trigger={
+                               
+                                {/*<Popup trigger={
                                       <button   style={{color:"green"}} className="btn btn-link" data-toggle="tooltip" data-placement="top" title="Edit">
                                       <svg width="1em" height="1em" viewBox="0 0 16 16" className ="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                           <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -161,12 +201,18 @@ class SubMenuContent extends Component {
                                     <strong>{item.name}</strong>  
                                     <input name="newName" ref={this.inputEditName} onChange={this.change} type="text" value={item.name}></input>
                                     <br></br>
-                                      <RichTextBox value={item.value} handleData={this.handleData}></RichTextBox>
+                                    <EditContentForm editId={item._id} clickUpdate={() =>  {  close(); this.handleEdit(item._id,item.name)}}></EditContentForm>
                                     <br></br>
                                       <button  onClick={() =>  {  close(); this.handleEdit(item._id,item.name)}} style={{color:"green"}} className="btn btn-link" data-toggle="tooltip" data-placement="top" title="Save">Save</button>
                                     </div>
                                     )}
-                                  </Popup>
+                                     </Popup>*/}
+                                     <Link to={`EditContentForm/${item._id}`} style={{color:"green"}} className="btn btn-link" data-toggle="tooltip" data-placement="top" title="Edit">
+                                      <svg width="1em" height="1em" viewBox="0 0 16 16" className ="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                          <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                                       </svg>
+                              </Link>
                                     /
                                     <button onClick={() => this.handleDelete(item._id,item.name)}  style={{color:"red"}} className="btn btn-link" data-toggle="tooltip" data-placement="top" title="Delete">
                                     <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -177,12 +223,9 @@ class SubMenuContent extends Component {
                             </div>
                           </div>
                           <div className="form-row">
-                            <div className="col"> 
-                                <div
-                                  dangerouslySetInnerHTML={{
-                                    __html: item.value,
-                                  }}
-                                />
+                            <div className="col">  
+                            <RichTextDisplay editorStateProp={  item.value  }></RichTextDisplay>
+                            {/*<Editor   editorState={ EditorState.createWithContent(convertFromRaw(JSON.parse(item.value))) }  />*/}
                             </div>
                             </div>
                           </td>

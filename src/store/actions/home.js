@@ -588,9 +588,70 @@ export const onContentDelete = (id) => {
 }
 
 
+
+export const updateContentSuccess = (id,value) => {
+  return {
+    type: actionsTypes.UPDATE_CONTENT_SUCCESS,
+    id:id,
+    value:value
+  };
+};
+
 export const onContentUpdate = (id,name,value) => {
   console.log("onContentUpdate Start",id,name,value);
   return (dispatch) => { 
-     
+    const authData = {
+      id: id,
+      name:name,
+      value:value
+    };
+    let url = "http://localhost:8080/updateContent";
+    const headers = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+    axios
+      .put(url, authData, {headers: headers,})
+      .then((response) => {
+        console.log('Content Update succcess ' ,response)
+        dispatch(updateContentSuccess(id,value));
+      }).then((response) => {
+        //dispatch(updatePasswordComplete())
+      })
+      .catch((err) => {
+        //dispatch(uploadfileFail(err))
+      });
   };
 }
+
+export const loadSubMenuContentByIdSuccess = (data) => {
+  return {
+    type: actionsTypes.LOAD_EDITABLE_CONTENT,
+    editableContent:data
+  };
+};
+
+export const loadSubMenuContentById = (id) => {
+  console.log(id);
+  return (dispatch) => { 
+    axios
+    .get(
+      "http://localhost:8080/getSubMenuContentById?id=" +id
+    )
+    .then((response) => {
+      console.log(response);
+      dispatch(loadSubMenuContentByIdSuccess({name:response.data[0].name,value:response.data[0].value}))
+    })
+    .catch((error) => {
+      console.log("error",error)
+      //dispatch(fetchIngredientsFailed());
+    });
+  };
+}
+
+export const loadEditableContentClear = () => {
+  return {
+    type: actionsTypes.CLEAR_EDITABLE_CONTENT,
+  };
+}
+

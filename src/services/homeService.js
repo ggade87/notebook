@@ -517,6 +517,53 @@ app.delete("/deleteContent", jsonParser, function (req, res) {
   );
 });
 
+
+app.get("/getSubMenuContentById", jsonParser, function (req, res) {
+  MongoClient.connect(url, { useUnifiedTopology: true }, function (err, db) {
+    if (err) throw err;
+    var dbo = db.db("notebook");
+    var { id } = req.query;
+    var query = { "_id": ObjectID(id)};
+    dbo
+      .collection("Content")
+      .find(query)
+      .toArray(function (err, result) {
+        console.log("getSubMenuContentById",result);
+        if (err) throw err;
+        result.length === 0
+          ? res.send({ error: { code: 1 } })
+          : res.send(result);
+        db.close();
+      });
+  });
+});
+
+
+app.put("/updateContent", jsonParser, function (req, res) {
+  MongoClient.connect(
+    url,
+    { useNewUrlParser: true, useUnifiedTopology: true },
+    function (err, db) {
+      var dbo = db.db("notebook");
+      var { id, name,value } = req.body;
+      var myquery = { "_id": ObjectID(id)};
+      var newvalues ={$set: {
+        "name":name,
+        "value":value,
+      }};
+      dbo.collection("Content").updateOne(myquery ,newvalues, function (error, result) {
+        if (error) {
+          res.send({ error: error });
+        } else {
+          res.send(result);
+        }
+        db.close();
+      });
+    }
+  );
+});
+
+
 var server = app.listen(8080, function () {
   var host = server.address().address;
   var port = server.address().port;

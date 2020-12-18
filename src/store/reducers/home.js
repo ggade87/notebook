@@ -1,6 +1,7 @@
 import * as actionTypes from "../actions/actionTypes";
 import { updateObject } from "../utility";
 const initialState = {
+  editableContent:{name:"",value:""},
   error: null,
   contentError: null,
   mainMenu: [
@@ -237,6 +238,33 @@ const deleteContentSuccess = (state, action) => {
   return updateObject(state, updatedState);
 };
 
+
+const loadEditableContentSuccess = (state, action) => {
+  const updatedState = {
+    editableContent: action.editableContent,
+  };
+  return updateObject(state, updatedState);
+};
+const clearEditableContentSuccess = (state, action) => {
+  const updatedState = {
+    editableContent: {name:"",value:""},
+  };
+  return updateObject(state, updatedState);
+};
+
+const updateContentSuccess = (state, action) => {
+ // const updatedState = {
+  //};
+  //return updateObject(state, updatedState);
+  const Content = [...state.subMenuContent];
+  const index = state.subMenuContent.findIndex((m) => m._id === action.id);
+  Content[index] = {...Content[index], value: action.value}  
+  const updatedState = {
+    subMenuContent: Content,
+  };
+  return updateObject(state, updatedState);
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_MENUES:
@@ -283,6 +311,12 @@ const reducer = (state = initialState, action) => {
       return deleteSubMenuSuccess(state, action);
     case actionTypes.DELETE_CONTENT_SUCCESS:
       return deleteContentSuccess(state, action);
+    case actionTypes.LOAD_EDITABLE_CONTENT:
+      return loadEditableContentSuccess(state, action);
+    case actionTypes.CLEAR_EDITABLE_CONTENT:
+      return clearEditableContentSuccess(state, action);
+    case actionTypes.UPDATE_CONTENT_SUCCESS:
+      return updateContentSuccess(state, action);
     default:
       return state;
   }
