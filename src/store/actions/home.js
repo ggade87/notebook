@@ -649,6 +649,22 @@ export const loadSubMenuContentById = (id) => {
   };
 }
 
+export const searchSubMenuContent = (search) => {
+  return (dispatch) => { 
+    axios
+    .get(
+      "http://localhost:8080/search?searchString=" +search
+    )
+    .then((response) => {
+      dispatch(loadContentS(response.data));
+    })
+    .catch((error) => {
+      console.log("error",error)
+      //dispatch(fetchIngredientsFailed());
+    });
+  };
+} 
+
 export const loadEditableContentClear = () => {
   return {
     type: actionsTypes.CLEAR_EDITABLE_CONTENT,
