@@ -5,6 +5,7 @@ import MainMenuContent from "./../../../components/content/mainMenuContent";
 import backImage from "../../../assets/images/slide-3.jpg";
 import classes from "./Home.module.css";
 import HomePage from "./../../../components/HomePage/HomePage";
+import SearchBox from "../../../components/SearchBox/SearchBox";
 class Home extends Component {
   state = {
     showMenu: false,
@@ -15,11 +16,13 @@ class Home extends Component {
   constructor() {
     super();
     this.inputName = React.createRef();
+   
   }
 
   componentDidMount() {
     this.props.onInitMainMenu();
   }
+  
   handleSave = (e) => {
     e.preventDefault();
     if (this.inputName.current.value.trim() !== "")
@@ -34,6 +37,11 @@ class Home extends Component {
   showMenuFormHandler = () => {
     this.setState({ showForm: !this.state.showForm });
   };
+  componentDidUpdate (prevProps) {
+    if (prevProps.location.key !== this.props.location.key) {
+      this.setState({ showMenu: false, id: 0, menu: ""});//take back to home page
+    }
+}
   render() {
     return (
       <div className={classes.MainContainer}>
@@ -118,7 +126,10 @@ class Home extends Component {
                       id={this.state.id}
                     ></MainMenuContent>
                   ) : (
-                    <img src={backImage} alt='Loading' className={classes.BackImage}></img>
+                    <div style={{width:"500px",margin:"0 auto",marginTop:"50px"}}>
+                       <SearchBox></SearchBox>
+                    </div>
+                     /*<img src={backImage} alt='Loading' className={classes.BackImage}></img>*/ 
                   )}
                 </div>
               </React.Fragment>

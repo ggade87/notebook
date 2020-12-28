@@ -15,4 +15,5 @@ export {
   subMenuUpdate,
   mainMenuDelete,
   subMenuDelete,onContentDelete,onContentUpdate,loadSubMenuContentById,loadEditableContentClear
+  ,searchSubMenuContent
 } from "./home";

@@ -564,6 +564,36 @@ app.put("/updateContent", jsonParser, function (req, res) {
 });
 
 
+
+app.get("/search", jsonParser, function (req, res) {
+  MongoClient.connect(url, { useUnifiedTopology: true }, function (err, db) {
+    if (err) throw err;
+    var dbo = db.db("notebook");
+    console.log("req.query.searchString",req.query.searchString)
+    var  value =  req.query.searchString.split(" ");
+    console.log(value)
+    const array=[];
+    for (var i = 0; i < value.length; i++) {
+      array.push({"name": {"$regex": value[i], "$options": "i"}});
+    } 
+    console.log(array)
+    let query = {
+      "$or": array
+    };
+    dbo
+      .collection("Content")
+      .find(query)
+      .toArray(function (err, result) {
+        if (err) throw err;
+        result.length === 0
+          ? res.send({ error: { code: 1 } })
+          : res.send(result);
+        db.close();
+      });
+  });
+});
+
+
 var server = app.listen(8080, function () {
   var host = server.address().address;
   var port = server.address().port;
