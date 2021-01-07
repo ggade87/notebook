@@ -593,6 +593,44 @@ app.get("/search", jsonParser, function (req, res) {
   });
 });
 
+const docx = require('docx');
+const { AlignmentType, Document, Footer, Header, HeadingLevel, Packer, Paragraph, TextRun, UnderlineType, Table, TableCell, TableRow } = docx;
+app.get("/doc", async (req, res) => {
+  var { id } = req.query;
+  const doc = new Document();
+  const table = new Table({
+      rows: [
+          new TableRow({
+              children: [
+                  new TableCell({
+                      children: [new Paragraph(id)],
+                  }),
+                  new TableCell({
+                      children: [],
+                  }),
+              ],
+          }),
+          new TableRow({
+              children: [
+                  new TableCell({
+                      children: [],
+                  }),
+                  new TableCell({
+                      children: [new Paragraph("World")],
+                  }),
+              ],
+          }),
+      ],
+  });
+
+  doc.addSection({
+      children: [table],
+  });
+  const b64string = await Packer.toBase64String(doc);
+  res.setHeader('Content-Disposition', 'attachment; filename=My Document.docx');
+  res.send(Buffer.from(b64string, 'base64'));
+});
+
 
 var server = app.listen(8080, function () {
   var host = server.address().address;

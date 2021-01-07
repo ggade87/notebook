@@ -179,7 +179,12 @@ export const fetchMainMenu = () => {
           localStorage.getItem("userId")
       )
       .then((response) => {
-        dispatch(getMainMenu(response.data));
+       
+        if( response.data.error ){
+          
+        } else {
+          dispatch(getMainMenu(response.data));
+        }
       })
       .catch((error) => {
         //dispatch(fetchIngredientsFailed());
@@ -641,6 +646,25 @@ export const loadSubMenuContentById = (id) => {
     .then((response) => {
       console.log(response);
       dispatch(loadSubMenuContentByIdSuccess({name:response.data[0].name,value:response.data[0].value}))
+    })
+    .catch((error) => {
+      console.log("error",error)
+      //dispatch(fetchIngredientsFailed());
+    });
+  };
+}
+
+
+export const loadContentById = (id) => {
+  console.log(id);
+  return (dispatch) => { 
+    axios
+    .get(
+      "http://localhost:8080/getSubMenuContentById?id=" +id
+    )
+    .then((response) => {
+      console.log(response);
+      dispatch(loadContentS(response.data))
     })
     .catch((error) => {
       console.log("error",error)
