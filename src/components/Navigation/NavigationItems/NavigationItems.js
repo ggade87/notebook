@@ -6,9 +6,10 @@ const navigationItems = (props) => (
     <NavigationItem link="/" exact>
       Home
     </NavigationItem>
+    {props.isAuthenticated ? <NavigationItem link="/MainMenuForm">New</NavigationItem>:""}
     <NavigationItem link="/Contact">Contact</NavigationItem>
     {!props.isAuthenticated ? (
-      <NavigationItem link="/auth">Authentication</NavigationItem>
+      <NavigationItem link="/auth">Login/Signup</NavigationItem>
     ) : (
       <React.Fragment>
         <NavigationItem link="/Account">Account</NavigationItem>

@@ -1,8 +1,17 @@
 .AddButton {
-  margin: 0 auto;
   float: left;
 }
-
+.AddButtonStyle{
+  margin-left: 10px;
+  display: inline;
+  padding: -10px;
+}
+.row2:after {
+  width: 100%;
+  content: "";
+  display: table;
+  clear: both;
+}
 .BackImage {
   background-size: cover;
   background-repeat: no-repeat;
@@ -21,22 +30,16 @@
   float: left;
   width: 100%;
 }
-
-.column1 {
-  float: left;
-  width: 10%;
-}
-
-.column2 {
-  float: left;
-  border: 1px solid #e1e4e8;
-  width: 90%;
-}
+ 
 
 /* Clear floats after the columns */
 .row {
   margin: 0 auto;
   display: grid;
+}
+.ContentControl{
+  width: 100%;
+  background-color: rgb(195, 217, 255);
 }
 
 @media only screen and (min-width: 300px) {

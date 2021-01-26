@@ -1,0 +1,30 @@
+
+.formDiv {
+    width: 200px;
+    margin: 0 auto;
+  }
+  
+  @media only screen and (min-width: 300px) {
+    .formDiv {
+      width: 300px;
+    }
+    .MainContainer {
+      margin-top: 55px;
+    }
+  }
+  @media only screen and (min-width: 400px) {
+    .formDiv {
+      width: 450px;
+    }
+  }
+  @media only screen and (min-width: 500px) {
+    .formDiv {
+      width: 450px;
+    }
+  }
+  @media only screen and (min-width: 600px) {
+    .formDiv {
+      width: 600px;
+    }
+  }
+  

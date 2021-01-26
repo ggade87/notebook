@@ -5,9 +5,9 @@ const initialState = {
   error: null,
   contentError: null,
   mainMenu: [
-    { _id: 1, name: "REACT" },
-    { _id: 2, name: "CSS" },
-    { _id: 3, name: "JS" },
+    { _id: 1, name: "Menu1" },
+    { _id: 2, name: "Menu2" },
+    { _id: 3, name: "Menu3" },
   ],
   subMenu: [],
   tempSubMenu: [
