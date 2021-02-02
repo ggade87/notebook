@@ -1,44 +1,22 @@
 import React from "react";
-import Input from "../../components/UI/Input/Input";
-import Button from "../../components/UI/Button/Button";
 import classes from "./Auth.module.css";
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
-import Spinner from "../../components/UI/Spinner/Spinner";
 import { Redirect } from "react-router-dom";
+
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+  
+import LoginForm from './LoginForm/LoginForm';
+import RegForm from './RegForm/RegForm';
 class Auth extends React.Component {
   state = {
-    controls: {
-      email: {
-        elementType: "input",
-        elementConfig: {
-          type: "email",
-          placeholder: "Mail Address",
-        },
-        value: "",
-        validation: {
-          required: true,
-          isEmaol: true,
-        },
-        valid: false,
-        touched: false,
-      },
-      password: {
-        elementType: "input",
-        elementConfig: {
-          type: "password",
-          placeholder: "Password",
-        },
-        value: "",
-        validation: {
-          required: true,
-          minLength: 6,
-        },
-        valid: false,
-        touched: false,
-      },
-    },
-    isSignup: true,
+    value: 0  
   };
 
   componentDidMount() {
@@ -47,86 +25,12 @@ class Auth extends React.Component {
       this.props.onSetAuthRedirectPath();
     }
   }
-  checkValidity(value, rules) {
-    let isValid = true;
-    if (!rules) {
-      return true;
-    }
-    if (rules.required) {
-      isValid = value.trim() !== "" && isValid;
-    }
-
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid;
-    }
-
-    if (rules.maxLength) {
-      isValid = value.length <= rules.maxLength && isValid;
-    }
-
-    return isValid;
-  }
-  inputChangedHandler = (event, controlName) => {
-    const updateControls = {
-      ...this.state.controls,
-      [controlName]: {
-        ...this.state.controls[controlName],
-        value: event.target.value,
-        valid: this.checkValidity(
-          event.target.value,
-          this.state.controls[controlName].validation
-        ),
-        touched: true,
-      },
-    };
-    this.setState({ controls: updateControls });
+  
+  handleChange = (event,newValue) => {
+    this.setState({value :newValue});
   };
-
-  submitHandler = (event) => {
-    event.preventDefault();
-
-    this.props.onAuth(
-      this.state.controls.email.value,
-      this.state.controls.password.value,
-      this.state.isSignup
-    );
-  };
-
-  switchAuthModeHandler = () => {
-    this.setState((prevState) => {
-      return { isSignup: !prevState.isSignup };
-    });
-  };
-
+ 
   render() {
-    const formElementsArray = [];
-    for (let key in this.state.controls) {
-      formElementsArray.push({
-        id: key,
-        config: this.state.controls[key],
-      });
-    }
-
-    let form = formElementsArray.map((formElement) => (
-      <Input
-        key={formElement.id}
-        elementType={formElement.config.elementType}
-        elementConfig={formElement.config.elementConfig}
-        value={formElement.config.value}
-        invalid={!formElement.config.valid}
-        shouldValidate={formElement.config.validation}
-        touched={formElement.config.touched}
-        changed={(event) => this.inputChangedHandler(event, formElement.id)}
-      ></Input>
-    ));
-
-    if (this.props.loading) {
-      form = <Spinner></Spinner>;
-    }
-    let errorMessage = null;
-    if (this.props.error) {
-      errorMessage = <p>{this.props.error.message}</p>;
-    }
     let authRedirect = null;
     if (this.props.isAuthenticated) {
       authRedirect = <Redirect to={this.props.authRedirectPath}></Redirect>;
@@ -134,15 +38,20 @@ class Auth extends React.Component {
     return (
       <div className={classes.Auth}>
         {authRedirect}
-        {errorMessage}
-        <form onSubmit={this.submitHandler}>
-          {form}
-          <Button btnType="Success">SUBMIT</Button>
-        </form>
-        <Button btnType="Danger" clicked={this.switchAuthModeHandler}>
-          SWITCH TO {this.state.isSignup ? "SIGNIN" : "SIGNUP"}
-        </Button>
-      </div>
+      <AppBar position="static" className={classes.Tab}>
+        <Tabs value={this.state.value} onChange={this.handleChange} aria-label="Notebook Authorization.">
+          <Tab label="Login" {...a11yProps(0)} />
+          <Tab label="Registration" {...a11yProps(1)} />
+        </Tabs>
+      </AppBar>
+      <div>
+      <TabPanel value={this.state.value} index={0}>
+        <LoginForm></LoginForm>
+      </TabPanel>
+      <TabPanel value={this.state.value} index={1}>
+        <RegForm></RegForm>
+      </TabPanel>
+      </div> </div>
     );
   }
 }
@@ -164,3 +73,46 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);
+
+
+
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+  },
+}));

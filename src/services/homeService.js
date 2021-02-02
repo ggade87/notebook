@@ -175,7 +175,7 @@ app.post("/getUser", jsonParser, function (req, res) {
       .toArray(function (err, result) {
         if (err) throw err;
         result.length === 0
-          ? res.send({ error: { code: 1 } })
+          ? res.send({ error: { message:"Invalid username & password!",code: 1 } })
           : res.send(result);
         db.close();
       });
@@ -198,15 +198,30 @@ app.post("/rigisterUser", jsonParser, function (req, res) {
         Mobile: "",
         profession: "",
       };
-      dbo.collection("Users").insertOne(myobj, function (error, result) {
-        if (error) {
-          res.send({ error: error });
-        } else {
-          res.send(result);
-        }
+      var query = { email: email  };
+      dbo
+        .collection("Users")
+        .find(query)
+        .toArray(function (err, result) {
+          if (err) throw err;
 
-        db.close();
-      });
+          if(result.length > 0){
+            const err = {error : {message:"Email exist.",code : 11000}}
+            res.send(err);
+            db.close();
+          }else{
+            dbo.collection("Users").insertOne(myobj, function (error, result) {
+              if (error) {
+                res.send({ error: error });
+              } else {
+                res.send(result);
+                db.close();
+              }
+            });
+          }
+         
+        });
+     
     }
   );
 });

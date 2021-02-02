@@ -40,6 +40,7 @@ export const checkAuthTimeout = (expirationTime) => {
     }, expirationTime * 1000);
   };
 };
+
 export const auth = (email, password, isSignup) => {
   return (dispatch) => {
     dispatch(authStart());
@@ -65,16 +66,25 @@ export const auth = (email, password, isSignup) => {
       .then((response) => {
         console.log(response.data);
         if (response.data.error && response.data.error.code > 0) {
-          throw response.data.error;
+          dispatch(authFail(response.data.error));
+          //throw response.data.error;
         } else if (!response.data) {
-          throw response.data.error;
-        }
+            throw response.data.error;
+        }else{
         const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
-        localStorage.setItem("token", response.data[0]._id);
+        let id="";
+        if(response.data.ops && response.data.ops[0]._id)
+        {
+          id=response.data.ops[0]._id
+        }else{
+          id= response.data[0]._id
+        }
+        localStorage.setItem("token",id);
         localStorage.setItem("expirationDate", expirationDate);
-        localStorage.setItem("userId", response.data[0]._id);
-        dispatch(authSuccess(response.data[0]._id, response.data[0]._id));
+        localStorage.setItem("userId",id);
+        dispatch(authSuccess(id,id));
         dispatch(checkAuthTimeout(3600));
+      }
         /*if (response.data.error && response.data.error.code > 0) {
           throw response.data.error;
         } else if (!response.data) {
@@ -155,5 +165,11 @@ export const authCheckState = () => {
         );
       }
     }
+  };
+};
+
+export const setErrorNull = (path) => {
+  return {
+    type: actionTypes.CLEAR_ERROR,
   };
 };

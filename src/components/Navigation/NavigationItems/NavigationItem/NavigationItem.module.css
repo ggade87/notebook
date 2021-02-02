@@ -3,13 +3,11 @@
   box-sizing: border-box;
   display: inline-block;
   width: 100%;
-  color: var(--black-600);
   padding: 6px 16px;
   border-radius: 1000px;
 }
 
 .NavigationItem a {
-  color: var(--black-600);
   text-decoration: none;
   width: 100%;
   box-sizing: border-box;
@@ -51,7 +49,6 @@
   .NavigationItem a.active,
   .NavigationItem a.active {
     background-size: 4px;
-    color: white;
     font-weight: bold;
     border-bottom: 3px solid red;
   }
@@ -61,7 +58,6 @@
   .NavigationItem a.active,
   .NavigationItem a.active {
     background-size: 4px;
-    color: white;
     font-weight: bold;
     border-bottom: 3px solid red;
   }

@@ -8,6 +8,9 @@ const initialState = {
   authRedirectPath: "/",
 };
 
+const setErrorNull = (state, action) => {
+  return updateObject(state, { error: null });
+};
 const authStart = (state, action) => {
   return updateObject(state, { error: null, loading: true });
 };
@@ -46,6 +49,8 @@ const reducer = (state = initialState, action) => {
       return authLogout(state, action);
     case actionTypes.SET_AUTH_REDIRECT_PATH:
       return setAuthRedirectPath(state, action);
+    case actionTypes.CLEAR_ERROR:
+      return setErrorNull(state, action);
     default:
       return state;
   }

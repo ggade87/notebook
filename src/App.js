@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import * as actions from "./store/actions/index";
 import Account from "./containers/Account/Account";
 import Contact from "./components/Contact/Contact";
+import About from "./components/About/About";
 import EditContentForm from './components/content/EditContentForm/EditContentForm';
 import MainMenuForm from './components/Common/Forms/MainMenuForm/MainMenuForm';
 import SubMenuForm from './components/Common/Forms/SubMenuForm/SubMenuForm';
@@ -21,7 +22,9 @@ class App extends React.Component {
     let routes = (
       <Switch>
         <Route path="/auth" exact component={Auth}></Route>
+        <Route path="/auth" exact component={Auth}></Route>
         <Route path="/Contact" component={Contact}></Route>
+        <Route path="/About" component={About}></Route>
         <Route path="/data/:id/:type" component={Public}></Route>
         <Route path="/" exact component={Home}></Route>
         <Redirect to="/"></Redirect>
@@ -35,6 +38,7 @@ class App extends React.Component {
           <Route path="/SubMenuForm/:id/:mainMenuName" component={SubMenuForm}></Route>
           <Route path="/Account" component={Account}></Route>
           <Route path="/Contact" component={Contact}></Route>
+          <Route path="/About" component={About}></Route>
           <Route path="/data/:id/:type" component={Public}></Route>
           <Route path="/EditContentForm/:id" component={EditContentForm}></Route>
           <Route path="/logout" exact component={Logout}></Route>

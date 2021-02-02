@@ -1,4 +1,4 @@
-export { auth, logout, setAuthRedirectPath, authCheckState } from "./auth";
+export { auth, logout, setAuthRedirectPath, authCheckState ,setErrorNull} from "./auth";
 export {
   addNewMainMenu,
   fetchSubMenu,

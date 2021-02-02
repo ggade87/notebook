@@ -44,17 +44,6 @@ class Home extends Component {
               <React.Fragment>
                 <div className={classes.MainMenuDiv}>
                   <MainMenu onMenuClick={this.handleMenuClick}></MainMenu>
-                  <ul className="nav nav-tabs">
-                    <li
-                      className="nav-item"
-                      key={Math.random()}
-                      style={{
-                        padding: "6px",
-                      }}
-                    >
-                   
-                    </li>
-                  </ul>
                 </div>
                 <div className={classes.MainContent}>
                   {this.state.showMenu ? (

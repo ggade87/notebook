@@ -3,15 +3,17 @@ import AutoCompleteText from '../../components/UI/AutoCompleteText/AutoCompleteT
 import RichTextBox from "../RichTextBox/RichTextBox";
 import { Link } from "react-router-dom";
 import RichTextDisplay from '../RichTextBox/RichTextDisplay/RichTextDisplay';
+import classes from './SearchBox.module.css';
 class SearchBox extends Component {
     state = { submenu:[] }
     handleDisplay = (submenu) => {
          this.setState({submenu:submenu})   
     }
     render() { 
-        return ( <React.Fragment>
+        return ( 
+          <React.Fragment>
+            <div className={classes.SearchBox}>
              <AutoCompleteText onSearch={this.handleDisplay} items={["Ganesh","Gaoesh","Gaopsh","Gaopqr",]}></AutoCompleteText>
-
                {this.state.submenu.length > 0 ? <table className="table">
                   <tbody>
                   { /*<GridComponent dataSource={this.props.subMenuContent}>
@@ -81,7 +83,7 @@ class SearchBox extends Component {
                     })}
                      </tbody>
                   </table>:""}
-       
+                  </div>
         </React.Fragment> );
     }
 }

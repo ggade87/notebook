@@ -1,12 +1,13 @@
 .Toolbar {
-  height: 25px;
+  height: 35px;
   width: 100%;
   position: fixed;
   top: 0;
   left: 0;
-  /*background-color: var(--black-025);*/
+  /*background-color: var(--black-025);
+    background-color: #24292e;*/
   color: hsla(0, 0%, 100%, 0.7);
-  background-color: #24292e;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
