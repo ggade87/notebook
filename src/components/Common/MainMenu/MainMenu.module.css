@@ -1,75 +1,88 @@
-.MainMenu{
-    font-family: sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.MainMenu {
+  font-family: sans-serif;
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
 }
-.item{
+.item {
   text-align: left;
+  box-shadow: 2px -2px 4px -2px rgba(153, 151, 151, 0.75);
+  padding: 3px;
+  border-radius: 0px !important;
 }
- 
-.main{
-    width:400px;   
- }
-  .container {  
-    margin-left: -22px;
-    margin:0 auto;
-    float: left;
-    white-space: nowrap;  width: 100%; display: inline   ; 
-    vertical-align: middle;
-    overflow-x: auto; 
-    overflow-y: hidden; /* Hide vertical scrollbar */
-    overflow-x: hidden; /* Hide horizontal scrollbar */
-  }
-   
-  
-  .columnL {
-    float: left;
-    width: 5%;
-    padding-top : 10px;
-  }
+.item:hover {
+  border: 1px solid black;
+  z-index: 1;
+  box-shadow: 10px black;
+  position: relative;
+  background-color: rgb(241, 201, 153);
+}
+@keyframes anime {
+}
+.main {
+  width: 400px;
+}
+.container {
+  margin-left: -22px;
+  margin: 0 auto;
+  float: left;
+  white-space: nowrap;
+  width: 100%;
+  display: inline;
+  vertical-align: middle;
+  overflow-x: auto;
+  overflow-y: hidden; /* Hide vertical scrollbar */
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+}
 
-  #leftButton{
-    float: right;
-  }
-  .columnM {
-    float: left;
-    width: 90%;
-    padding-top: 10px;
-  }.columnR {
-    float: left;
-    width: 5%;
-    padding-top: 10px; margin-left: -28px;
-  }
-  .row{
-      width: 80%;
-  }
-  /* Clear floats after the columns */
-  .row:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
+.columnL {
+  float: left;
+  width: 5%;
+  padding-top: 10px;
+}
 
-  
+#leftButton {
+  float: right;
+}
+.columnM {
+  float: left;
+  width: 90%;
+  padding-top: 10px;
+}
+.columnR {
+  float: left;
+  width: 5%;
+  padding-top: 10px;
+  margin-left: -28px;
+}
+.row {
+  width: 100%;
+}
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
 @media only screen and (min-width: 300px) {
-    .main{
-        width: 1000px;   
-     }
+  .main {
+    width: 100%;
   }
-  @media only screen and (min-width: 400px) {
-    .main{
-        width: 1000px;   
-     }
+}
+@media only screen and (min-width: 400px) {
+  .main {
+    width: 100%;
   }
-  @media only screen and (min-width: 500px) {
-    .main{
-        width: 1000px;   
-     }
+}
+@media only screen and (min-width: 500px) {
+  .main {
+    width: 100%;
   }
-  @media only screen and (min-width: 600px) {
-    .main{
-        width: 1500px;   
-     }
+}
+@media only screen and (min-width: 600px) {
+  .main {
+    width: 100%;
+    /* width: 1400px; */
   }
-  
+}

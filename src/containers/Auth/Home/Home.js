@@ -49,7 +49,7 @@ class Home extends Component {
                   {this.state.showMenu ? (
                   <Content menuName={this.state.menu} id={this.state.id}></Content>
                   ) : (
-                    <div style={{width:"500px",margin:"0 auto",marginTop:"50px"}}>
+                    <div style={{width:"100%",margin:"0 auto",marginTop:"40px"}}>
                        <SearchBox></SearchBox>
                     </div>
                      /*<img src={backImage} alt='Loading' className={classes.BackImage}></img>*/ 

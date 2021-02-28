@@ -106,7 +106,7 @@ class LoginForm extends React.Component {
           <label className={[classes.popuptext,this.state.validationResult.emailValidation?classes.show:""].join(" ")}>{this.state.validationResult.emailValidation}</label>
         </div> 
         <div className={classes.popup}>
-        <TextField onKeyUp={this.passwordVal}  type="password" name="password" value={this.state.password} onChange={this.handleInputChange} required id="standard-required" label="Password" />
+        <TextField onKeyUp={this.passwordVal}  type="password" name="password" value={this.state.password} onChange={this.handleInputChange} required id="standard-password" label="Password" />
         <label  className={[classes.popuptext,this.state.validationResult.passwordValidation?classes.show:""].join(" ")}>{this.state.validationResult.passwordValidation}</label>
         </div>
         <button className={["btn btn-primary",classes.Button].join(" ")}  onClick={this.login} >Login</button>

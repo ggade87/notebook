@@ -3,10 +3,16 @@ import classes from './MainMenu.module.css';
 import { connect } from "react-redux";
 import * as actions from "../../../store/actions/index";
 
+
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 class MainMenu extends Component {
     state = {
+      active:0
       };
-    onMenuClick = (menuRequest) => {
+    onMenuClick = (menuRequest,index) => {
+      this.setState({active:index})
       this.props.onMenuClick(menuRequest);
     };
     componentDidMount() {
@@ -21,7 +27,7 @@ class MainMenu extends Component {
       return (<React.Fragment>
           <div className={classes.main}>
             <div className={classes.row}>
-            <div className={classes.columnL}  >
+            {/*<div className={classes.columnL}  >
               <button id="leftButton" onClick={() => this.scroll(-100,0)} style={{border:"none",backgroundColor:"transparent"}}>
                     <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-double-left" viewBox="0 0 16 16">
                       <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
@@ -29,9 +35,29 @@ class MainMenu extends Component {
                     </svg>
               </button>   
             </div>
-            <div className={classes.columnM} >
+            <div className={classes.columnM} >*/}
             <div id="sDiv" className={ classes.container }>
-                    {this.props.mainMenu && this.props.mainMenu.length > 0
+            <AppBar position="static" color="default">
+        <Tabs
+          value={this.state.active}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label="scrollable auto tabs example"
+        >
+          {this.props.mainMenu && this.props.mainMenu.length > 0
+                            ? this.props.mainMenu.map((item,index) => {
+                                return (
+                                  <Tab label={item.name} className={[classes.item,"btn btn-link"].join(" ")}   key={item._id} onClick={() => this.onMenuClick({id:item._id,name: item.name},index) }   />
+                                );
+                              })
+                            : <Tab label="Please add new menu" />
+                      }
+         
+        </Tabs>
+      </AppBar>
+                    {/*this.props.mainMenu && this.props.mainMenu.length > 0
                             ? this.props.mainMenu.map((item,index) => {
                                 return (
                                   <button className={[classes.item,"btn btn-link"].join(" ")}   key={item._id} onClick={() => this.onMenuClick({id:item._id,name: item.name}) } >
@@ -40,10 +66,10 @@ class MainMenu extends Component {
                                 );
                               })
                             : "Please add new menu"
-                      }
+                            */}
               </div> 
             </div>
-            <div className={classes.columnR}  >
+             {/*<div className={classes.columnR}  >
             <button onClick={() => this.scroll(100,0)} style={{border:"none",backgroundColor:"transparent"}}>
                 <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-double-right" viewBox="0 0 16 16">
                       <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
@@ -52,7 +78,7 @@ class MainMenu extends Component {
                   
                   </button> 
             </div>
-          </div>
+          </div>*/}
 
       </div>
       </React.Fragment>  );

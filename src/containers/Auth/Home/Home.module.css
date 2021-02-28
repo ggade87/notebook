@@ -11,7 +11,7 @@
 .MainMenu {
   margin: 0 auto;
   content: "";
-  display: grid;
+  /* display: grid; */
   clear: both;
 }
 .MainMenuDiv {
@@ -31,7 +31,7 @@
 .AddButton:active {
   background-color: red;
 }
- 
+
 @media only screen and (min-width: 300px) {
   .MainContainer {
     margin-top: 55px;

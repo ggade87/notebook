@@ -1,7 +1,11 @@
-import React  from "react";
+import React,{createRef}  from "react";
 import classes from "./PersonalDetails.module.css";
 import { connect } from "react-redux";
 import * as actions from "../../../store/actions/index";
+import Button from '@material-ui/core/Button';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import Spinner from '../../../components/UI/Spinner/Spinner';
+import Loading from "../../../assets/images/Loading.gif";
 class PersonalDetails extends React.Component {
     state= {
         changePassword:false,
@@ -9,9 +13,13 @@ class PersonalDetails extends React.Component {
         base64:"",
         user:this.props.User ,
         password:"",
-        confirmPassword:""
+        confirmPassword:"",
+        imageProccesing:false
     }
-
+    constructor(props) {
+        super(props);
+        this.myRef = React.createRef();
+      }
     componentDidMount() {
         this.props.loadImage();
         this.props.loadUser();
@@ -61,19 +69,33 @@ class PersonalDetails extends React.Component {
     
     handleImageSelect = (event) => {
          event.preventDefault();
-        let file = event.target.files[0];
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = () => {
-          this.setState({
-            file: reader.result,
-            base64: reader.result,
-          });
-        };
+         var fileTypes = ['jpg', 'jpeg', 'png'];  //acceptable file types
+         var extension = event.target.files[0].name.split('.').pop().toLowerCase(),  //file extension from input file
+         isSuccess = fileTypes.indexOf(extension) > -1;  //is extension in acceptable types
+         if (isSuccess) { //yes
+            this.setState({imageProccesing:true})
+            let file = event.target.files[0];
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+              this.setState({
+                file: reader.result,
+                base64: reader.result,
+                imageProccesing:false
+              });
+              this.props.onUpload(reader.result);
+            };
+         }else{
+            alert("Invalid image. Only 'jpg', 'jpeg', 'png' file allowed.")
+        }
     }
-
+    uploadFileClick = () => {
+        this.myRef.current.click(); 
+    } 
     uploadFile = () => {
-        this.props.onUpload(this.state.base64);
+        alert(this.state.base64)
+        if(this.state.base64)
+            this.props.onUpload(this.state.base64);
     } 
 
     componentDidUpdate(prevProps, prevState){
@@ -108,7 +130,7 @@ class PersonalDetails extends React.Component {
                                     return (
                                     <div key={index}  >
                                         {item.file ? (
-                                        <img className={[classes.imageCss,"rounded mx-auto d-block"].join(" ")} alt="Loading." src={item.file} />
+                                        <img className={[classes.imageCss," "].join(" ")} alt="Loading." src={item.file} />
                                         ) : (
                                         ""
                                         )}
@@ -118,8 +140,14 @@ class PersonalDetails extends React.Component {
                             : "Loading....."}
                             </th>
                             <th scope="col"> 
-                            <input className="float-left btn  btn-outline-secondary"  type="file" onChange={this.handleImageSelect}></input>
-                            <button className="float-left btn btn-link"  onClick={this.uploadFile} disabled={this.props.loading}>  Upload</button>
+                            <div  className={classes.FileUploading} >
+                                <input ref={this.myRef} style={{display:"none"}} className="float-left btn  btn-outline-secondary"  type="file" onChange={this.handleImageSelect}></input>
+                                {this.state.imageProccesing? <img alt="Loading.."  className={classes.Loading}  width="30px" height="30px" src={Loading}></img>:""}    
+                            </div>
+                             <Button variant="contained"  color="default"  className={classes.button}  onClick={this.uploadFileClick} disabled={this.state.imageProccesing} 
+                            startIcon={<CloudUploadIcon />} >
+                                Change Image
+                            </Button> 
                             </th>
                         </tr>
                     </thead>
