@@ -177,8 +177,15 @@ class RichTextDisplay extends Component {
           });
         }
       }
+
+    //   componentWillReceiveProps(nextProps){
+    //     if(this.props.editorStateProp === nextProps.editorStateProp){
+    //        this.setState({
+    //         editorState:  convertToEditorState(this.props.editorStateProp)
+    //        })
+    //     }
+    //  }
       //Link code end
-    
       render() {
         const { editorState } = this.state;
     

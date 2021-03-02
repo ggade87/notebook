@@ -44,12 +44,12 @@ class MainMenu extends Component {
           textColor="primary"
           variant="scrollable"
           scrollButtons="auto"
-          aria-label="scrollable auto tabs example"
+          aria-label="scrollable auto tabs example" style={{backgroundColor:"white",marginTop:"10px" }}
         >
           {this.props.mainMenu && this.props.mainMenu.length > 0
                             ? this.props.mainMenu.map((item,index) => {
                                 return (
-                                  <Tab label={item.name} className={[classes.item,"btn btn-link"].join(" ")}   key={item._id} onClick={() => this.onMenuClick({id:item._id,name: item.name},index) }   />
+                                  <Tab style={{backgroundColor:"white" }} label={item.name} className={[classes.item,"btn btn-link"].join(" ")}   key={item._id} onClick={() => this.onMenuClick({id:item._id,name: item.name},index) }   />
                                 );
                               })
                             : <Tab label="Please add new menu" />

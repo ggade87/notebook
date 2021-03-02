@@ -50,7 +50,7 @@ class App extends React.Component {
     }
     return (
       <div className="App">
-        <div>
+        <div style={{display:"contents"}}>
           <Layout> {routes} </Layout>
         </div>
       </div>

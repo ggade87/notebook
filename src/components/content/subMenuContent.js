@@ -109,12 +109,12 @@ display= (data) =>{
                     <div className={classes.AddButton}>
                         <button
                           onClick={this.showContentFormHandler}
-                          className={classes.AddButtonStyle}
+                          className={[classes.AddButtonStyle,"btn btn-link"].join(" ")}
                         >
-                          New : {this.props.subMenuName.toUpperCase()}
+                          Add content for menu : {this.props.subMenuName.toUpperCase()}
                         </button>
+                      <Link to={`/data/${this.props.id}/all`} target="_blank">Link</Link>
                       </div>
-                      <Link to={`/data/${this.props.id}/all`} >Details</Link>
                  </div>
                  <div className={classes.row2}>
                       {this.props.contentError ? (
@@ -123,11 +123,10 @@ display= (data) =>{
                         <div
                           style={{
                             overflow: "auto",
-                            height: "400px",
+                            height: "430px",
                           }}
                         >
-                          <table className="table">
-                          <tbody>
+                          
                           { /*<GridComponent dataSource={this.props.subMenuContent}>
                                 <ColumnsDirective>
                                   <ColumnDirective field='name' width='100' textAlign="Right"/>
@@ -136,15 +135,12 @@ display= (data) =>{
                               </GridComponent>*/}
                             {this.props.subMenuContent.map((item, index) => {
                               return (
-                              
-                                <tr key={item._id}>
-                                  <td style={{ textAlign: "left" }}>
-                                  <div className="form-row">
-                                    <div className="col-9">
-                                    
+                                <div key={item._id} className={classes.items}>
+                                  <div style={{display:"flex"}}>
+                                    <div  >
                                         {index + 1}. <strong><Link to={`/data/${item._id}/single`} >{item.name}</Link></strong>  
                                     </div>
-                                    <div className="col">
+                                    <div style={{float:"right"}} >
                                         <div>
                                       
                                         {/*<Popup trigger={
@@ -183,18 +179,16 @@ display= (data) =>{
                                             </button> </div>
                                     </div>
                                   </div>
-                                  <div className="form-row">
-                                    <div className="col">  
-                                    <RichTextDisplay editorStateProp={  item.value  }></RichTextDisplay>
+                                  <div  >
+                                    <div  >  
+                                    <RichTextDisplay editorStateProp={item.value}></RichTextDisplay>
                                     {/*<Editor   editorState={ EditorState.createWithContent(convertFromRaw(JSON.parse(item.value))) }  />*/}
                                     </div>
                                     </div>
-                                  </td>
-                                </tr>
+                                  </div>
                               );
                             })}
-                            </tbody>
-                          </table>
+                          
                         </div>
                       )}
                 </div>

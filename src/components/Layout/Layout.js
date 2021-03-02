@@ -32,6 +32,7 @@ class Layout extends React.Component {
           closed={this.sideDrawerClosedHandler}
         ></SideDrawer>
         <main className={classes.Content}>{this.props.children}</main>
+        <div style={{width:"100%",height:"10px",fontSize:"6px", backgroundColor:"grey",position:"fixed",bottom:"0"}}>@Ganesh</div>
       </Aux>
     );
   }

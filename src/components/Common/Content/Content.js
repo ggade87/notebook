@@ -58,6 +58,13 @@ class Content extends Component {
                   </button>  
                 </div>
                 <div id="mySidebar2">
+                <div
+                          style={{
+                            overflow: "auto",
+                            height: "430px",
+                            marginTop:"-60px"
+                          }}
+                        > 
                   <table className="table">
                     <tbody>
                       <tr  key={Math.random()}>
@@ -94,7 +101,7 @@ class Content extends Component {
                       );
                     })}
               </tbody>
-                          </table>
+                          </table></div>
                     </div>
                 </div>
                 <div id="rightSidebar"   className={classes.rsidebar}>

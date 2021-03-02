@@ -45,8 +45,8 @@ class Public extends Component {
            </div>:""} 
             {this.props.subMenuContent.map((item, index) => {
                         return (
-                            <div className={classes.items} style={{padding:"30px"}} key={item._id}>
-                                 <div className={classes.header} id={index}>
+                            <div  id={index} className={classes.items} style={{padding:"30px"}} key={item._id}>
+                                 <div className={classes.header}>
                                         <strong>  {index + 1}.{item.name}</strong>  
                                   </div>
                                   <div className={classes.content} >
