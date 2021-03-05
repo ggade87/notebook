@@ -1,10 +1,20 @@
 import React, { Component } from "react";
 import { stateToHTML } from "draft-js-export-html";
 
-import {CompositeDecorator,convertToRaw,convertFromHTML, Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState } from "draft-js";
+import { Modifier,  CompositeDecorator,convertToRaw,convertFromHTML, Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState } from "draft-js";
 import "draft-js/dist/Draft.css";
 import "./RichTextBox.css";
-import HtmlParser from "react-html-parser";
+import createStyles from 'draft-js-custom-styles';
+const customStyleMap = {
+  MARK: {
+    backgroundColor: 'Yellow',
+    fontStyle: 'italic',
+  },
+ };
+ 
+ // Passing the customStyleMap is optional
+ const { styles , customStyleFn, exporter } = createStyles(['font-size','font-family', 'color', 'text-transform'], 'CUSTOM_', customStyleMap);
+ 
 class RichTextBox extends Component {
   constructor(props) {
     super(props);
@@ -47,6 +57,8 @@ class RichTextBox extends Component {
     this.confirmLink = this._confirmLink.bind(this);
     this.onLinkInputKeyDown = this._onLinkInputKeyDown.bind(this);
     this.removeLink = this._removeLink.bind(this);
+    this.toggleColor = this._toggleColor.bind(this);
+    this.updateEditorState = editorState => this.setState({ editorState });
   }
 
   //This function set state when edit called.
@@ -164,6 +176,71 @@ class RichTextBox extends Component {
     }
   }
   //Link code end
+  _toggleColor(toggledColor) {
+    const {editorState} = this.state;
+    const selection = editorState.getSelection();
+
+    // Let's just allow one color at a time. Turn off all active colors.
+    const nextContentState = Object.keys(colorStyleMap)
+      .reduce((contentState, color) => {
+        return Modifier.removeInlineStyle(contentState, selection, color)
+      }, editorState.getCurrentContent());
+
+    let nextEditorState = EditorState.push(
+      editorState,
+      nextContentState,
+      'change-inline-style'
+    );
+
+    const currentStyle = editorState.getCurrentInlineStyle();
+
+    // Unset style override for current color.
+    if (selection.isCollapsed()) {
+      nextEditorState = currentStyle.reduce((state, color) => {
+        return RichUtils.toggleInlineStyle(state, color);
+      }, nextEditorState);
+    }
+
+    // If the color is being toggled on, apply it.
+    if (!currentStyle.has(toggledColor)) {
+      nextEditorState = RichUtils.toggleInlineStyle(
+        nextEditorState,
+        toggledColor
+      );
+    }
+
+    this.onChange(nextEditorState);
+  }
+
+  toggleFontSize = fontSize => {
+    const newEditorState = styles.fontSize.toggle(this.state.editorState, fontSize);
+
+    return this.updateEditorState(newEditorState);
+  };
+
+  toggleFontFamily = fontFamily => {
+    const newEditorState = styles.fontFamily.toggle(this.state.editorState, fontFamily);
+
+    return this.updateEditorState(newEditorState);
+  };
+
+  removeFontSize = () => {
+    const newEditorState = styles.fontSize.remove(this.state.editorState);
+
+    return this.updateEditorState(newEditorState);
+  };
+
+  addFontSize = val => () => {
+    const newEditorState = styles.fontSize.add(this.state.editorState, val);
+
+    return this.updateEditorState(newEditorState);
+  };
+
+  toggleTextTransform = color => {
+    const newEditorState = styles.textTransform.toggle(this.state.editorState, color);
+
+    return this.updateEditorState(newEditorState);
+  };
 
   render() {
     const { editorState } = this.state;
@@ -178,7 +255,9 @@ class RichTextBox extends Component {
         className += " RichEditor-hidePlaceholder";
       }
     }
-
+    const options = x => x.map(fontSize => {
+      return <option key={fontSize} value={fontSize}>{fontSize}</option>;
+    });
     //Link code start
     let urlInput;
     if (this.state.showURLInput) {
@@ -221,10 +300,40 @@ class RichTextBox extends Component {
           editorState={editorState}
           onToggle={this.toggleInlineStyle}
         />
+          <ColorControls
+                editorState={editorState}
+                onToggle={this.toggleColor}
+              />
+                <div style={{ flex: '1 0 25%' }}>
+          <button
+            onClick={this.removeFontSize}
+          >
+            Remove FontSize
+          </button>
+          <button
+            onClick={this.addFontSize('24px')}
+          >
+            Add FontSize
+          </button>
+         
+          <select onChange={e => this.toggleFontSize(e.target.value)}>
+            {options(['Size','8px','10px','12px', '24px', '36px', '50px', '72px'])}
+          </select>
+          <select onChange={e => this.toggleColor(e.target.value)}>
+            {options(['color','green', 'blue', 'red', 'purple', 'orange', 'yellow', 'indigo', 'violet'])}
+          </select>
+          <select onChange={e => this.toggleTextTransform(e.target.value)}>
+            {options(['uppercase', 'capitalize'])}
+          </select> 
+          <select onChange={e => this.toggleFontFamily(e.target.value)}>
+            {options(['Times New Roman','Georgia, serif','Courier New, monospace','sans-serif', 'Helvetica, sans-serif', 'Verdana, sans-serif', 'Trebuchet MS, sans-serif'])}
+          </select> 
+        </div>
         <div className={className} onClick={this.focus}>
           <Editor
+            customStyleFn={customStyleFn}
+            customStyleMap={colorStyleMap}
             blockStyleFn={getBlockStyle}
-            customStyleMap={styleMap}
             editorState={editorState}
             handleKeyCommand={this.handleKeyCommand}
             keyBindingFn={this.mapKeyToEditorCommand}
@@ -239,6 +348,96 @@ class RichTextBox extends Component {
   }
 }
 
+//Color start
+var COLORS = [
+  {label: 'Red', style: 'red'},
+  {label: 'Orange', style: 'orange'},
+  {label: 'Yellow', style: 'yellow'},
+  {label: 'Green', style: 'green'},
+  {label: 'Blue', style: 'blue'},
+  {label: 'Indigo', style: 'indigo'},
+  {label: 'Violet', style: 'violet'},
+];
+
+const ColorControls = (props) => {
+  var currentStyle = props.editorState.getCurrentInlineStyle();
+  return (
+    <div style={stylesColor.controls}>
+      {COLORS.map(type =>
+        <StyleButton
+          key={type.label}
+          active={currentStyle.has(type.style)}
+          label={type.label}
+          onToggle={props.onToggle}
+          style={type.style}
+        />
+      )}
+    </div>
+  );
+};
+
+// This object provides the styling information for our custom color
+// styles.
+const colorStyleMap = {
+  red: {
+    color: 'rgba(255, 0, 0, 1.0)',
+  },
+  orange: {
+    color: 'rgba(255, 127, 0, 1.0)',
+  },
+  yellow: {
+    color: 'rgba(180, 180, 0, 1.0)',
+  },
+  green: {
+    color: 'rgba(0, 180, 0, 1.0)',
+  },
+  blue: {
+    color: 'rgba(0, 0, 255, 1.0)',
+  },
+  indigo: {
+    color: 'rgba(75, 0, 130, 1.0)',
+  },
+  violet: {
+    color: 'rgba(127, 0, 255, 1.0)',
+  },
+  color: {
+    
+  },
+  arial:{
+    fontFamily:"arial"
+  }
+};
+
+const stylesColor = {
+  root: {
+    fontFamily: '\'Georgia\', serif',
+    fontSize: 14,
+    padding: 20,
+    width: 600,
+  },
+  editor: {
+    borderTop: '1px solid #ddd',
+    cursor: 'text',
+    fontSize: 16,
+    marginTop: 20,
+    minHeight: 400,
+    paddingTop: 20,
+  },
+  controls: {
+    fontFamily: '\'Helvetica\', sans-serif',
+    fontSize: 14,
+    marginBottom: 10,
+    userSelect: 'none',
+  },
+  styleButton: {
+    color: '#999',
+    cursor: 'pointer',
+    marginRight: 16,
+    padding: '2px 0',
+  },
+};
+
+//color end
 // Custom overrides for "code" style.
 const styleMap = {
   CODE: {
@@ -268,9 +467,17 @@ class StyleButton extends React.Component {
   }
 
   render() {
+
+    let style;
+    if (this.props.active) {
+      style = {...stylesColor.styleButton, ...colorStyleMap[this.props.style]};
+    } else {
+      style = stylesColor.styleButton;
+    }
     let className = "RichEditor-styleButton";
     if (this.props.active) {
       className += " RichEditor-activeButton";
+      className +=" "+ style;
     }
 
     return (
@@ -365,7 +572,7 @@ const Link = (props) => {
   );
 };
 
-const styles = {
+const styles2 = {
   root: {
     fontFamily: '\'Georgia\', serif',
     padding: 20,

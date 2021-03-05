@@ -3,6 +3,18 @@ import { stateToHTML } from "draft-js-export-html";
 import {CompositeDecorator,convertFromRaw,convertToRaw,convertFromHTML, Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState } from "draft-js";
 import "draft-js/dist/Draft.css";
 import "../RichTextBox.css";
+import createStyles from 'draft-js-custom-styles';
+const customStyleMap = {
+  MARK: {
+    backgroundColor: 'Yellow',
+    fontStyle: 'italic',
+  },
+ };
+ 
+ // Passing the customStyleMap is optional
+ const {  customStyleFn  } = createStyles(['font-size','font-family', 'color', 'text-transform'], 'CUSTOM_', customStyleMap);
+ 
+
 const Link = (props) => {
   const {url} = props.contentState.getEntity(props.entityKey).getData();
   return (
@@ -222,10 +234,11 @@ class RichTextDisplay extends Component {
         //Link code End
     
         return (
-            <div className={className} onClick={this.focus}>
+            <div style={{fontSize:"14px",fontFamily:"arial"}} className={className} onClick={this.focus}>
               <Editor
+                customStyleFn={customStyleFn}
                 blockStyleFn={getBlockStyle}
-                customStyleMap={styleMap}
+                customStyleMap={colorStyleMap}
                 editorState={editorState}
                 onChange={this.onChange}
                 ref="editor"
@@ -271,7 +284,30 @@ class RichTextDisplay extends Component {
     }
     
      
-    
+    const colorStyleMap = {
+      red: {
+        color: 'rgba(255, 0, 0, 1.0)',
+      },
+      orange: {
+        color: 'rgba(255, 127, 0, 1.0)',
+      },
+      yellow: {
+        color: 'rgba(180, 180, 0, 1.0)',
+      },
+      green: {
+        color: 'rgba(0, 180, 0, 1.0)',
+      },
+      blue: {
+        color: 'rgba(0, 0, 255, 1.0)',
+      },
+      indigo: {
+        color: 'rgba(75, 0, 130, 1.0)',
+      },
+      violet: {
+        color: 'rgba(127, 0, 255, 1.0)',
+      },
+    };
+      
     const styles = {
       root: {
         fontFamily: '\'Georgia\', serif',

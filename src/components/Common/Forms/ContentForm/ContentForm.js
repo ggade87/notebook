@@ -38,7 +38,7 @@ class ContentForm extends Component {
               ref={this.inputName}
               type="text"
               className="form-control"
-              style={{ width: "300px", margin: "0 auto" }}
+              style={{ width: "100%", margin: "0 auto" }}
             />
             <hr></hr>
             Answer
@@ -47,15 +47,15 @@ class ContentForm extends Component {
                 ref={this.inputContent}
                 type="text"
                 className="form-control"
-                style={{ width: "300px", margin: "0 auto" }}
+                style={{ width: "100%", margin: "0 auto" }}
               />
             ) : (
               <div>
-                <div
+                {/* <div
                   dangerouslySetInnerHTML={{
                     __html: this.state.content,
                   }}
-                /> 
+                />  */}
                 <RichTextBox handleData={this.handleData}></RichTextBox>
               </div>
             )}

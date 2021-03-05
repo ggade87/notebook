@@ -16,12 +16,12 @@ class Content extends Component {
     };
     openNav = () => {
         if(this.state.flag === true){
-            document.getElementById("mySidebar").style.width = "20%";
+            document.getElementById("mySidebar").style.width = "17%";
             document.getElementById("mySidebar2").style.display = "block";
-            document.getElementById("rightSidebar").style.width = "80%";
+            document.getElementById("rightSidebar").style.width = "83%";
         }else{
             document.getElementById("mySidebar").style.width = "3%";
-           document.getElementById("mySidebar2").style.display = "none";
+            document.getElementById("mySidebar2").style.display = "none";
             document.getElementById("rightSidebar").style.width = "97%";
         }
         this.setState({flag:!this.state.flag})
@@ -89,7 +89,7 @@ class Content extends Component {
                       return (
                         <tr   key={item._id}>
                         <td>
-                          <button style={{width:"100%"}} className="btn btn-link"
+                          <button style={{width:"100%"}} className={classes.buttonaslink}
                             onClick={() =>
                               this.onSubMenuClick(item._id, item.name)
                             }
