@@ -12,12 +12,6 @@ const Link = (props) => {
     </a>
   );
 };
-
-const convertToEditorState = (editorContent) => {
-  const content = convertFromRaw(JSON.parse(editorContent));
-  const editorState = EditorState.createWithContent(content, decorator);
-  return editorState;
-};
 const decorator = new CompositeDecorator([
   {
     strategy: findLinkEntities,
@@ -91,12 +85,12 @@ class EditContentForm extends React.Component {
               onLoadCapture={this.getState}
               type="text"
               className="form-control"
-              style={{ width: "300px", margin: "0 auto" }}
+              style={{ width: "80%", margin: "0 auto" }}
             />
             <hr></hr>
-            Answer
-              <div>
-                {this.props.editableContent.value ? <RichTextBox value={convertToEditorState(this.props.editableContent.value)}  handleData={this.handleData}></RichTextBox>
+           
+              <div  style={{ width: "80%", margin: "0 auto" }}>
+                {this.props.editableContent.value ? <RichTextBox value={ this.props.editableContent.value }  handleData={this.handleData}></RichTextBox>
              : "" } </div>
             
             <hr></hr>

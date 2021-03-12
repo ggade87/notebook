@@ -67,3 +67,59 @@
   font-style: italic;
   text-align: center;
 }
+.richText-textAlignment-block > div {
+  display: inline;
+}
+.RichEditor-editor .richText-left-block div {
+  text-align: left;
+}
+.RichEditor-editor .richText-center-block div {
+  text-align: center;
+}
+.RichEditor-editor .richText-right-block div {
+  text-align: right;
+}
+
+.RichEditor-editor .richText-justify-block div {
+  text-align: justify;
+}
+.inserlink {
+  cursor: pointer;
+}
+.container {
+  display: "flex";
+}
+.formControl {
+  /* margin: theme.spacing(1); */
+  min-width: 120;
+}
+
+.RichEditor-activeButton .colorButton {
+  color: white;
+  text-decoration: underline;
+}
+
+.Container {
+  display: flex;
+  background-color: antiquewhite;
+  padding: 5px;
+  margin-top: 2px;
+}
+
+.Container .uploadBtn {
+  height: 20px;
+  width: 10px;
+  background: none;
+}
+.select {
+  margin-right: 3px;
+  border-radius: 4px;
+  background-color: #ccd9f5;
+  font-family: "Times New Roman", Times, serif;
+  cursor: pointer;
+  height: 23px;
+}
+.select * {
+  cursor: pointer;
+  background-color: #ccd9f5;
+}

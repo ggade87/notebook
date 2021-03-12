@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import classes from './MainMenu.module.css';
 import { connect } from "react-redux";
 import * as actions from "../../../store/actions/index";
-
-
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 class MainMenu extends Component {
     state = {
       active:0
@@ -49,7 +48,7 @@ class MainMenu extends Component {
           {this.props.mainMenu && this.props.mainMenu.length > 0
                             ? this.props.mainMenu.map((item,index) => {
                                 return (
-                                  <Tab style={{backgroundColor:"white" }} label={item.name} className={[classes.item,"btn btn-link"].join(" ")}   key={item._id} onClick={() => this.onMenuClick({id:item._id,name: item.name},index) }   />
+                                  <Tab icon={<FolderOpenIcon  style={{fill:"yellow"}}></FolderOpenIcon>}  style={{backgroundColor:"white",fontSize:"11px" }} label={item.name} className={[classes.item,"btn btn-link"].join(" ")}   key={item._id} onClick={() => this.onMenuClick({id:item._id,name: item.name},index) }   />
                                 );
                               })
                             : <Tab label="Please add new menu" />

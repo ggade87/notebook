@@ -41,7 +41,6 @@ class ContentForm extends Component {
               style={{ width: "100%", margin: "0 auto" }}
             />
             <hr></hr>
-            Answer
             {this.state.switchAnswer ? (
               <textarea
                 ref={this.inputContent}

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { stateToHTML } from "draft-js-export-html";
-import {CompositeDecorator,convertFromRaw,convertToRaw,convertFromHTML, Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState } from "draft-js";
+import {AtomicBlockUtils,CompositeDecorator,convertFromRaw,convertToRaw,convertFromHTML, Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState } from "draft-js";
 import "draft-js/dist/Draft.css";
 import "../RichTextBox.css";
 import createStyles from 'draft-js-custom-styles';
@@ -235,7 +235,7 @@ class RichTextDisplay extends Component {
     
         return (
             <div style={{fontSize:"14px",fontFamily:"arial"}} className={className} onClick={this.focus}>
-              <Editor
+              <Editor  blockRendererFn={mediaBlockRenderer}
                 customStyleFn={customStyleFn}
                 blockStyleFn={getBlockStyle}
                 customStyleMap={colorStyleMap}
@@ -339,6 +339,54 @@ class RichTextDisplay extends Component {
         color: '#3b5998',
         textDecoration: 'underline',
       },
+      media2: {
+       width:"100%",
+       height:"50%"
+      },
     };
  
+//Media start
+
+function mediaBlockRenderer(block) {
+  if (block.getType() === 'atomic') {
+    return {
+      component: Media,
+      editable: false,
+    };
+  }
+
+  return null;
+}
+
+const Audio = (props) => {
+  return <audio controls src={props.src} style={styles.media} />;
+};
+
+const Image = (props) => {
+  return <img src={props.src} style={{width:"100px",height:"100px"}} alt="Image" />;
+};
+
+const Video = (props) => {
+  return <video controls src={props.src} style={styles.media2} />;
+};
+
+const Media = (props) => {
+  const entity = props.contentState.getEntity(
+    props.block.getEntityAt(0)
+  );
+  const {src} = entity.getData();
+  const type = entity.getType();
+
+  let media;
+  if (type === 'audio') {
+    media = <Audio src={src} />;
+  } else if (type === 'image') {
+    media = <Image src={src} />;
+  } else if (type === 'video') {
+    media = <Video src={src} />;
+  }
+
+  return media;
+};
+//Media END
 export default RichTextDisplay;

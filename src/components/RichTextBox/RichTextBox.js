@@ -1,10 +1,30 @@
 import React, { Component } from "react";
 import { stateToHTML } from "draft-js-export-html";
-
-import { Modifier,  CompositeDecorator,convertToRaw,convertFromHTML, Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState } from "draft-js";
+import {AtomicBlockUtils,convertFromRaw, Modifier,  CompositeDecorator,convertToRaw,convertFromHTML, Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState } from "draft-js";
 import "draft-js/dist/Draft.css";
 import "./RichTextBox.css";
 import createStyles from 'draft-js-custom-styles';
+import Resizer from 'react-image-file-resizer';
+import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
+import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
+import FormatAlignJustifyIcon from '@material-ui/icons/FormatAlignJustify';
+import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
+import FormatBoldIcon from '@material-ui/icons/FormatBold';
+import FormatItalicIcon from '@material-ui/icons/FormatItalic';
+import FormatUnderlinedIcon from '@material-ui/icons/FormatUnderlined';
+import CodeIcon from '@material-ui/icons/Code';
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
+import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
+import InsertLinkIcon from '@material-ui/icons/InsertLink';
+import LinkOffIcon from '@material-ui/icons/LinkOff';
+import Tooltip from '@material-ui/core/Tooltip';
+import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
+import SwitchVideoIcon from '@material-ui/icons/SwitchVideo';
+import AudiotrackIcon from '@material-ui/icons/Audiotrack';
+import Button from '@material-ui/core/Button';
+import CancelIcon from '@material-ui/icons/Cancel';
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
 const customStyleMap = {
   MARK: {
     backgroundColor: 'Yellow',
@@ -14,7 +34,39 @@ const customStyleMap = {
  
  // Passing the customStyleMap is optional
  const { styles , customStyleFn, exporter } = createStyles(['font-size','font-family', 'color', 'text-transform'], 'CUSTOM_', customStyleMap);
- 
+
+const resizeFile = (file) => new Promise(resolve => {
+  Resizer.imageFileResizer(file,200, 200, 'JPEG', 100, 0,
+  uri => {
+    resolve(uri);
+  },
+  'base64'
+  );
+});
+
+
+
+
+const Link2 = (props) => {
+  const {url} = props.contentState.getEntity(props.entityKey).getData();
+  return (
+    <a rel="nofollow noreferrer" href={url} target="_blank">
+      {props.children}
+    </a>
+  );
+};
+
+    const convertToEditorState = (editorContent) => {
+      const content = convertFromRaw(JSON.parse(editorContent));
+      const editorState = EditorState.createWithContent(content, decorator);
+      return editorState;
+    };
+    const decorator = new CompositeDecorator([
+      {
+        strategy: findLinkEntities,
+        component: Link2,
+      },
+    ]);
 class RichTextBox extends Component {
   constructor(props) {
     super(props);
@@ -26,7 +78,7 @@ class RichTextBox extends Component {
     ]);
     
     this.state = {
-      editorState:  this.props.value ?  this.props.value :  EditorState.createEmpty(decorator)  ,
+      editorState:  this.props.value ?  convertToEditorState(this.props.value) :  EditorState.createEmpty(decorator)  ,
       editorContentHtml: "", 
       showURLInput: false,
       urlValue: '',
@@ -59,6 +111,10 @@ class RichTextBox extends Component {
     this.removeLink = this._removeLink.bind(this);
     this.toggleColor = this._toggleColor.bind(this);
     this.updateEditorState = editorState => this.setState({ editorState });
+
+    this.imageRef = React.createRef();
+    this.audioRef = React.createRef();
+    this.videoRef = React.createRef();
   }
 
   //This function set state when edit called.
@@ -102,7 +158,7 @@ class RichTextBox extends Component {
     this.onChange(RichUtils.toggleBlockType(this.state.editorState, blockType));
   }
 
-  _toggleInlineStyle(inlineStyle) {
+  _toggleInlineStyle(inlineStyle) { 
     this.onChange(
       RichUtils.toggleInlineStyle(this.state.editorState, inlineStyle)
     );
@@ -133,11 +189,18 @@ class RichTextBox extends Component {
       });
     }
   }
-
+  confirmLinkClose = () => {
+    this.setState({showURLInput:false})
+  }
   _confirmLink(e) {
     e.preventDefault();
     const {editorState, urlValue} = this.state;
     const contentState = editorState.getCurrentContent();
+    if(!urlValue.startsWith("https://"))
+    {
+      alert("Invalid url");
+      return;
+    }
     const contentStateWithEntity = contentState.createEntity(
       'LINK',
       'MUTABLE',  
@@ -241,12 +304,160 @@ class RichTextBox extends Component {
 
     return this.updateEditorState(newEditorState);
   };
+  uploadFileClick = (type) =>{
+    if(type === "Image"){
+      this.imageRef.current.click();
+    }else if(type === "Audio"){
+      this.audioRef.current.click();
+    }else if(type === "Video"){
+      this.videoRef.current.click();
+    }
+  }
+  handleImageSelect = async (event) => {
+    alert(event)
+    event.preventDefault();
+    var fileTypes = ['jpg', 'jpeg', 'png'];  //acceptable file types
+    var extension = event.target.files[0].name.split('.').pop().toLowerCase(),  //file extension from input file
+    isSuccess = fileTypes.indexOf(extension) > -1;  //is extension in acceptable types
+    if (true) { //yes
+      alert(extension)
 
+       let file = event.target.files[0];
+       let reader = new FileReader();
+       const image = await resizeFile(file) 
+       const {editorState, urlValue, urlType} = this.state;
+        const contentState = editorState.getCurrentContent();
+        const contentStateWithEntity = contentState.createEntity(
+        'image',
+        'MUTABLE',
+        { src:  image},
+        );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(
+      editorState,
+      {currentContent: contentStateWithEntity}
+    );
+
+    this.setState({
+      // The third parameter here is a space string, not an empty string
+      // If you set an empty string, you will get an error: Unknown DraftEntity key: null
+      editorState: AtomicBlockUtils.insertAtomicBlock(
+        newEditorState,
+        entityKey,
+        ' '
+      ),
+      showURLInput: false,
+      urlValue: '',
+    }, () => {
+      setTimeout(() => this.focus(), 0);
+    });
+      //  reader.readAsDataURL(image);
+      //  reader.onloadend = () => {
+      //    alert(reader.result )
+      //     //  base64: reader.result,
+          
+      //  };
+    }else{
+       alert("Invalid image. Only 'jpg', 'jpeg', 'png' file allowed.")
+   }
+}
+
+
+handleAudioSelect = async (event) => {
+  alert(event)
+  event.preventDefault();
+  var fileTypes = ['jpg', 'jpeg', 'png'];  //acceptable file types
+  var extension = event.target.files[0].name.split('.').pop().toLowerCase(),  //file extension from input file
+  isSuccess = fileTypes.indexOf(extension) > -1;  //is extension in acceptable types
+  if (true) { //yes
+    alert(extension)
+
+     let file = event.target.files[0];
+     let reader = new FileReader();
+     reader.readAsDataURL(file);
+     reader.onloadend = () => {
+      
+        //  base64: reader.result,
+        const {editorState, urlValue, urlType} = this.state;
+        const contentState = editorState.getCurrentContent();
+        const contentStateWithEntity = contentState.createEntity(
+          "audio",
+          'IMMUTABLE',
+          {src: reader.result}
+        );
+        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+        const newEditorState = EditorState.set(
+          editorState,
+          {currentContent: contentStateWithEntity}
+        );
+    
+        this.setState({
+          // The third parameter here is a space string, not an empty string
+          // If you set an empty string, you will get an error: Unknown DraftEntity key: null
+          editorState: AtomicBlockUtils.insertAtomicBlock(
+            newEditorState,
+            entityKey,
+            ' '
+          ),
+          showURLInput: false,
+          urlValue: '',
+        }, () => {
+          setTimeout(() => this.focus(), 0);
+        });
+     };
+  }else{
+     alert("Invalid image. Only 'jpg', 'jpeg', 'png' file allowed.")
+ }
+}
+
+handleVedioSelect = async (event) => {
+  alert(event)
+  event.preventDefault();
+  var fileTypes = ['jpg', 'jpeg', 'png'];  //acceptable file types
+  var extension = event.target.files[0].name.split('.').pop().toLowerCase(),  //file extension from input file
+  isSuccess = fileTypes.indexOf(extension) > -1;  //is extension in acceptable types
+  if (true) { //yes
+    alert(extension)
+
+     let file = event.target.files[0];
+     let reader = new FileReader();
+     reader.readAsDataURL(file);
+     reader.onloadend = () => {
+      
+        //  base64: reader.result,
+        const {editorState, urlValue, urlType} = this.state;
+        const contentState = editorState.getCurrentContent();
+        const contentStateWithEntity = contentState.createEntity(
+          "video",
+          'IMMUTABLE',
+          {src: reader.result}
+        );
+        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+        const newEditorState = EditorState.set(
+          editorState,
+          {currentContent: contentStateWithEntity}
+        );
+    
+        this.setState({
+          // The third parameter here is a space string, not an empty string
+          // If you set an empty string, you will get an error: Unknown DraftEntity key: null
+          editorState: AtomicBlockUtils.insertAtomicBlock(
+            newEditorState,
+            entityKey,
+            ' '
+          ),
+          showURLInput: false,
+          urlValue: '',
+        }, () => {
+          setTimeout(() => this.focus(), 0);
+        });
+     };
+  }else{
+     alert("Invalid image. Only 'jpg', 'jpeg', 'png' file allowed.")
+ }
+}
   render() {
     const { editorState } = this.state;
-
-    // If the user changes block type before entering any text, we can
-    // either style the placeholder or hide it. Let's just hide it now.
     let className = "RichEditor-editor";
     console.log(editorState)
     var contentState = editorState.getCurrentContent();
@@ -263,17 +474,20 @@ class RichTextBox extends Component {
     if (this.state.showURLInput) {
       urlInput =
         <div style={styles.urlInputContainer}>
-          <input
+          <div className="input-group">
+          <input className="form-control"
             onChange={this.onURLChange}
             ref="url"
             style={styles.urlInput}
             type="text"
             value={this.state.urlValue}
-            onKeyDown={this.onLinkInputKeyDown}
-          />
-          <button onMouseDown={this.confirmLink}>
-            Confirm
-          </button>
+            onKeyDown={this.onLinkInputKeyDown} style={{height:"30px"}}
+          /> <Tooltip title="Save">
+          <Button className="btn btn-outline-secondary"   onMouseDown={this.confirmLink}  startIcon={  <SaveAltIcon    />   }>
+          </Button></ Tooltip> <Tooltip title="Cancel">
+          <Button className="btn btn-outline-secondary"   onClick={this.confirmLinkClose}  startIcon={  <CancelIcon    />   }>
+          </Button></ Tooltip>
+          </div>
         </div>;
     }
 
@@ -281,17 +495,8 @@ class RichTextBox extends Component {
 
     return (
       <div className="RichEditor-root">
-        <div style={styles.buttons}>
-            <button
-              onMouseDown={this.promptForLink}
-              style={{marginRight: 10}}>
-              Add Link
-            </button>
-            <button onMouseDown={this.removeLink}>
-              Remove Link
-            </button>
-          </div>
-          {urlInput}
+       <div className="Container"  > 
+           
         <BlockStyleControls
           editorState={editorState}
           onToggle={this.toggleBlockType}
@@ -300,12 +505,29 @@ class RichTextBox extends Component {
           editorState={editorState}
           onToggle={this.toggleInlineStyle}
         />
+          <div>
+          <Tooltip title="Insert Link">
+                <InsertLinkIcon className="inserlink"  
+                  onMouseDown={this.promptForLink}
+                  style={{marginRight: 10}}> 
+                  Add Link
+                </InsertLinkIcon>
+            </Tooltip>
+            <Tooltip title="Remove Link">
+              <LinkOffIcon  className="inserlink"  onMouseDown={this.removeLink}>
+                Remove Link
+              </LinkOffIcon >
+            </Tooltip>
+       
+          {urlInput} 
+          </div>
+        </div><div className="Container"  > 
           <ColorControls
                 editorState={editorState}
                 onToggle={this.toggleColor}
               />
                 <div style={{ flex: '1 0 25%' }}>
-          <button
+          {/* <button
             onClick={this.removeFontSize}
           >
             Remove FontSize
@@ -314,23 +536,48 @@ class RichTextBox extends Component {
             onClick={this.addFontSize('24px')}
           >
             Add FontSize
-          </button>
+          </button> */}
          
-          <select onChange={e => this.toggleFontSize(e.target.value)}>
-            {options(['Size','8px','10px','12px', '24px', '36px', '50px', '72px'])}
+          <select  className="select"  onChange={e => this.toggleFontSize(e.target.value)}>
+            {options(['Size','8px','10px','12px','16px', '24px', '36px', '50px', '72px'])}
           </select>
-          <select onChange={e => this.toggleColor(e.target.value)}>
+          {/* <select onChange={e => this.toggleColor(e.target.value)}>
             {options(['color','green', 'blue', 'red', 'purple', 'orange', 'yellow', 'indigo', 'violet'])}
-          </select>
-          <select onChange={e => this.toggleTextTransform(e.target.value)}>
+          </select> */}
+          <select  className="select"  onChange={e => this.toggleTextTransform(e.target.value)}>
             {options(['uppercase', 'capitalize'])}
           </select> 
-          <select onChange={e => this.toggleFontFamily(e.target.value)}>
+          <select  className="select"  onChange={e => this.toggleFontFamily(e.target.value)}>
             {options(['Times New Roman','Georgia, serif','Courier New, monospace','sans-serif', 'Helvetica, sans-serif', 'Verdana, sans-serif', 'Trebuchet MS, sans-serif'])}
-          </select> 
+          </select> </div>
+          <div className="Container"  >
+          <Tooltip title="Add Image">
+            <div >
+                <input  ref={this.imageRef} style={{display:"none"}} type="file" onChange={this.handleImageSelect}></input>
+                <Button  className="uploadBtn"    onClick={() => this.uploadFileClick('Image')}   
+                              startIcon={  <AddAPhotoIcon  />  } >
+                </Button> 
+            </div>
+         </Tooltip>
+          <Tooltip title="Add Audio">
+            <div>
+          <input   ref={this.audioRef} style={{display:"none"}}  type="file" onChange={this.handleAudioSelect}></input>
+          <Button  className="uploadBtn"      onClick={() => this.uploadFileClick('Audio')} disabled={this.state.imageProccesing} 
+                        startIcon={  <AudiotrackIcon   />   } >
+          </Button> 
+          </div>
+         </Tooltip>
+          <Tooltip title="Add video">
+            <div>
+          <input   ref={this.videoRef} style={{display:"none"}}  type="file" onChange={this.handleVedioSelect}></input>
+           <Button  className="uploadBtn"      onClick={() => this.uploadFileClick('Video')} disabled={this.state.imageProccesing} 
+                        startIcon={ <SwitchVideoIcon   /> } >
+          </Button> </div>
+         </Tooltip>
+        </div>
         </div>
         <div className={className} onClick={this.focus}>
-          <Editor
+          <Editor  blockRendererFn={mediaBlockRenderer}
             customStyleFn={customStyleFn}
             customStyleMap={colorStyleMap}
             blockStyleFn={getBlockStyle}
@@ -370,6 +617,7 @@ const ColorControls = (props) => {
           label={type.label}
           onToggle={props.onToggle}
           style={type.style}
+          backgroundColor={type.style}
         />
       )}
     </div>
@@ -452,6 +700,14 @@ function getBlockStyle(block) {
   switch (block.getType()) {
     case "blockquote":
       return "RichEditor-blockquote";
+    case "align-center":
+      return "richText-center-block";
+    case "align-left":
+      return "richText-left-block";
+    case "align-right":
+      return "richText-right-block";
+    case "align-justify":
+      return "richText-justify-block";
     default:
       return null;
   }
@@ -465,9 +721,7 @@ class StyleButton extends React.Component {
       this.props.onToggle(this.props.style);
     };
   }
-
   render() {
-
     let style;
     if (this.props.active) {
       style = {...stylesColor.styleButton, ...colorStyleMap[this.props.style]};
@@ -479,15 +733,46 @@ class StyleButton extends React.Component {
       className += " RichEditor-activeButton";
       className +=" "+ style;
     }
-
+ 
     return (
       <span className={className} onMouseDown={this.onToggle}>
-        {this.props.label}
+        {getIcon(this.props.label)}
       </span>
     );
   }
 }
-
+function getIcon(lable) {
+  if (lable === 'Center') {
+    return <FormatAlignCenterIcon />;
+  }else if(lable === 'Left'){
+    return <FormatAlignLeftIcon  />;
+  } else if(lable === 'Right'){
+    return <FormatAlignRightIcon   />;
+  } else if(lable === 'Justify'){
+    return <FormatAlignJustifyIcon    />;
+  }else if(lable === 'Bold'){
+    return <FormatBoldIcon     />;
+  }else if(lable === 'Italic'){
+    return <FormatItalicIcon      />;
+  }else if(lable === 'Underline'){
+    return <FormatUnderlinedIcon />;
+  }else if(lable === 'Code Block'){
+    return <CodeIcon />;
+  }
+  else if(lable === 'UL'){
+    return <FormatListBulletedIcon  />;
+  }
+  else if(lable === 'OL'){
+    return <FormatListNumberedIcon  />;
+  }else if(lable === 'Blockquote'){
+    return <FormatQuoteIcon  />;
+  }else if(COLORS.some(x => x.label === lable)){
+    return <span className="colorButton" style={{padding:"3px 10px",backgroundColor:lable,fontWeight:"bold", fontSize:"12px", cursor: "pointer",border:"1px solid black"}} >O</span>
+  }
+  
+  
+  return lable;
+}
 const BLOCK_TYPES = [
   { label: "H1", style: "header-one" },
   { label: "H2", style: "header-two" },
@@ -499,6 +784,10 @@ const BLOCK_TYPES = [
   { label: "UL", style: "unordered-list-item" },
   { label: "OL", style: "ordered-list-item" },
   { label: "Code Block", style: "code-block" },
+  { label: "Center", style: "align-center" },
+  { label: "Left", style: "align-left" },
+  { label: "Right", style: "align-right" },
+  { label: "Justify", style: "align-justify" }, 
 ];
 
 const BlockStyleControls = (props) => {
@@ -511,15 +800,16 @@ const BlockStyleControls = (props) => {
 
   return (
     <div className="RichEditor-controls">
-      {BLOCK_TYPES.map((type) => (
-        <StyleButton
+      {BLOCK_TYPES.map((type) => 
+        ( <StyleButton
           key={type.label}
           active={type.style === blockType}
           label={type.label}
           onToggle={props.onToggle}
           style={type.style}
-        />
-      ))}
+        />     
+        
+       ))}
     </div>
   );
 };
@@ -583,6 +873,7 @@ const styles2 = {
   },
   urlInputContainer: {
     marginBottom: 10,
+    display:'flex',
   },
   urlInput: {
     fontFamily: '\'Georgia\', serif',
@@ -602,7 +893,55 @@ const styles2 = {
   link: {
     color: '#3b5998',
     textDecoration: 'underline',
+  }, 
+  media: {
+   width:"100%",
+   height:"50%"
   },
 };
 
+//Media start
+
+function mediaBlockRenderer(block) {
+  if (block.getType() === 'atomic') {
+    return {
+      component: Media,
+      editable: false,
+    };
+  }
+
+  return null;
+}
+
+const Audio = (props) => {
+  return <audio controls src={props.src} style={styles.media} />;
+};
+
+const Image = (props) => {
+  return <img src={props.src} style={{width:"100px",height:"100px"}} alt="Image" />;
+};
+
+const Video = (props) => {
+  return <video controls src={props.src} style={styles2.media} />;
+};
+
+const Media = (props) => {
+  const entity = props.contentState.getEntity(
+    props.block.getEntityAt(0)
+  );
+  const {src} = entity.getData();
+  const type = entity.getType();
+
+  let media;
+  if (type === 'audio') {
+    media = <Audio src={src} />;
+  } else if (type === 'image') {
+    media = <Image src={src} />;
+  } else if (type === 'video') {
+    media = <Video src={src} />;
+  }
+
+  return media;
+};
+//Media END
 export default RichTextBox;
