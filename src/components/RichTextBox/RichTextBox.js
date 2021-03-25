@@ -23,8 +23,6 @@ import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import SwitchVideoIcon from '@material-ui/icons/SwitchVideo';
 import AudiotrackIcon from '@material-ui/icons/Audiotrack';
 import Button from '@material-ui/core/Button';
-import CancelIcon from '@material-ui/icons/Cancel';
-import SaveAltIcon from '@material-ui/icons/SaveAlt';
 const customStyleMap = {
   MARK: {
     backgroundColor: 'Yellow',
@@ -82,6 +80,7 @@ class RichTextBox extends Component {
       editorContentHtml: "", 
       showURLInput: false,
       urlValue: '',
+      notificationclass:"popuptext"
     };
     
 
@@ -189,9 +188,7 @@ class RichTextBox extends Component {
       });
     }
   }
-  confirmLinkClose = () => {
-    this.setState({showURLInput:false})
-  }
+
   _confirmLink(e) {
     e.preventDefault();
     const {editorState, urlValue} = this.state;
@@ -456,6 +453,31 @@ handleVedioSelect = async (event) => {
      alert("Invalid image. Only 'jpg', 'jpeg', 'png' file allowed.")
  }
 }
+
+
+showFunction = (id)  =>  { 
+  if(id === "PopupNotification"){
+    if(this.state.notificationclass === "show"){
+      // this.setState({notificationclass:"popuptext"})
+    }else{
+      this.setState({notificationclass:"show"})
+    }
+  }else{
+    this.setState({notificationclass:"popuptext"})
+  }
+}
+
+hideFunction = (id)  =>  { 
+  if(id === "PopupNotification"){
+    if(this.state.notificationclass === "show"){
+       this.setState({notificationclass:"popuptext"})
+    }else{
+      // this.setState({notificationclass:"show"})
+    }
+  }else{
+    // this.setState({notificationclass:"popuptext"})
+  }
+}
   render() {
     const { editorState } = this.state;
     let className = "RichEditor-editor";
@@ -474,20 +496,17 @@ handleVedioSelect = async (event) => {
     if (this.state.showURLInput) {
       urlInput =
         <div style={styles.urlInputContainer}>
-          <div className="input-group">
-          <input className="form-control"
+          <input
             onChange={this.onURLChange}
             ref="url"
             style={styles.urlInput}
             type="text"
             value={this.state.urlValue}
-            onKeyDown={this.onLinkInputKeyDown} style={{height:"30px"}}
-          /> <Tooltip title="Save">
-          <Button className="btn btn-outline-secondary"   onMouseDown={this.confirmLink}  startIcon={  <SaveAltIcon    />   }>
-          </Button></ Tooltip> <Tooltip title="Cancel">
-          <Button className="btn btn-outline-secondary"   onClick={this.confirmLinkClose}  startIcon={  <CancelIcon    />   }>
-          </Button></ Tooltip>
-          </div>
+            onKeyDown={this.onLinkInputKeyDown}
+          />
+          <button onMouseDown={this.confirmLink}>
+            Confirm
+          </button>
         </div>;
     }
 
@@ -522,10 +541,12 @@ handleVedioSelect = async (event) => {
           {urlInput} 
           </div>
         </div><div className="Container"  > 
+        <div className="popup"  onMouseOver={() => this.showFunction("PopupNotification")}>     Color
+         <span onMouseOut={() => this.hideFunction("PopupNotification")}  onClick={() => this.hideFunction("PopupNotification")}   className={this.state.notificationclass} id="PopupNotification" >
           <ColorControls
                 editorState={editorState}
                 onToggle={this.toggleColor}
-              />
+              />   </span> </div>
                 <div style={{ flex: '1 0 25%' }}>
           {/* <button
             onClick={this.removeFontSize}
@@ -610,8 +631,9 @@ const ColorControls = (props) => {
   var currentStyle = props.editorState.getCurrentInlineStyle();
   return (
     <div style={stylesColor.controls}>
-      {COLORS.map(type =>
-        <StyleButton
+      {COLORS.map((type,index) => {
+        return  (
+        <ColorButton
           key={type.label}
           active={currentStyle.has(type.style)}
           label={type.label}
@@ -619,7 +641,9 @@ const ColorControls = (props) => {
           style={type.style}
           backgroundColor={type.style}
         />
-      )}
+        )  }
+     
+        ) }
     </div>
   );
 };
@@ -676,6 +700,7 @@ const stylesColor = {
     fontSize: 14,
     marginBottom: 10,
     userSelect: 'none',
+    display:"flex"
   },
   styleButton: {
     color: '#999',
@@ -723,12 +748,40 @@ class StyleButton extends React.Component {
   }
   render() {
     let style;
+    let className = "RichEditor-styleButton";
+    if (!this.props.active) {
+      style = {color:this.props.label};
+    }  
+    if (this.props.active) {
+      className += " RichEditor-activeButton";
+    }
+ 
+    return (
+      <span className={className} onMouseDown={this.onToggle}>
+        {getIcon(this.props.label,this.props.active)}
+      </span>
+    );
+  }
+}
+
+
+
+class ColorButton extends React.Component {
+  constructor() {
+    super();
+    this.onToggle = (e) => {
+      e.preventDefault();
+      this.props.onToggle(this.props.style);
+    };
+  }
+  render() {
+    let style;
     if (this.props.active) {
       style = {...stylesColor.styleButton, ...colorStyleMap[this.props.style]};
     } else {
       style = stylesColor.styleButton;
     }
-    let className = "RichEditor-styleButton";
+    let className = "RichEditor-ColorButton";
     if (this.props.active) {
       className += " RichEditor-activeButton";
       className +=" "+ style;
@@ -736,12 +789,12 @@ class StyleButton extends React.Component {
  
     return (
       <span className={className} onMouseDown={this.onToggle}>
-        {getIcon(this.props.label)}
+        {getIcon(this.props.label,this.props.active)}
       </span>
     );
   }
 }
-function getIcon(lable) {
+function getIcon(lable,active) {
   if (lable === 'Center') {
     return <FormatAlignCenterIcon />;
   }else if(lable === 'Left'){
@@ -767,7 +820,8 @@ function getIcon(lable) {
   }else if(lable === 'Blockquote'){
     return <FormatQuoteIcon  />;
   }else if(COLORS.some(x => x.label === lable)){
-    return <span className="colorButton" style={{padding:"3px 10px",backgroundColor:lable,fontWeight:"bold", fontSize:"12px", cursor: "pointer",border:"1px solid black"}} >O</span>
+    let color= !active? lable:"";
+    return <span className="colorButton" style={{ borderRadius:"2px", padding:"3px 5px",backgroundColor:lable,fontWeight:"bold", fontSize:"12px", cursor: "pointer",color:color }} >O</span>
   }
   
   
@@ -873,7 +927,6 @@ const styles2 = {
   },
   urlInputContainer: {
     marginBottom: 10,
-    display:'flex',
   },
   urlInput: {
     fontFamily: '\'Georgia\', serif',

@@ -94,9 +94,17 @@
   min-width: 120;
 }
 
+.RichEditor-ColorButton {
+  cursor: pointer;
+  margin-right: 7px;
+  padding: 2px 0;
+  display: inline-block;
+}
+
 .RichEditor-activeButton .colorButton {
   color: white;
   text-decoration: underline;
+  border: 2px solid black;
 }
 
 .Container {
@@ -123,3 +131,65 @@
   cursor: pointer;
   background-color: #ccd9f5;
 }
+
+/* Pupup start */
+
+.popup {
+  position: relative;
+  display: flex;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: black;
+}
+
+/* The actual popup */
+.popup .popuptext {
+  visibility: hidden;
+  width: 160px;
+  background-color: rgb(223, 26, 26);
+  color: rgb(22, 13, 13);
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: 0px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+}
+
+/* Toggle this class - hide and show the popup */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+  content: "";
+  position: absolute;
+  top: 40%;
+  background-color: white;
+  box-shadow: 0 4px 8px -2px rgb(9 30 66 / 25%), 0 0 1px rgb(9 30 66 / 31%);
+  border-radius: 5px;
+  margin: 0 auto;
+  padding: 5px;
+  z-index: 1;
+  /*  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 50%;*/
+}
+
+/* Popup END */
